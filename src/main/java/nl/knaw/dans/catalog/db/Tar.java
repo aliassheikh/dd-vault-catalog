@@ -49,8 +49,8 @@ public class Tar {
     private String tarUuid;
     @Column(name = "vault_path")
     private String vaultPath;
-    @Column(name = "archival_date")
-    private OffsetDateTime archivalDate;
+    @Column(name = "archival_timestamp")
+    private OffsetDateTime archivalTimestamp;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "tar")
     @ToString.Exclude
     private List<TarPart> tarParts = new ArrayList<>();

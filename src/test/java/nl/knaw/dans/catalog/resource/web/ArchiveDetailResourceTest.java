@@ -53,7 +53,7 @@ class ArchiveDetailResourceTest {
         var tar = Tar.builder()
             .tarUuid("uuid")
             .vaultPath("path")
-            .archivalDate(OffsetDateTime.now())
+            .archivalTimestamp(OffsetDateTime.now())
             .build();
 
         var ocflObjectVersion1 = OcflObjectVersion.builder()
@@ -62,7 +62,6 @@ class ArchiveDetailResourceTest {
             .otherId("OTHER ID")
             .nbn("urn:uuid:123")
             .tar(tar)
-            .exportTimestamp(OffsetDateTime.now())
             .build();
 
         var ocflObjectVersion2 = OcflObjectVersion.builder()
@@ -71,7 +70,6 @@ class ArchiveDetailResourceTest {
             .otherId("OTHER ID DIFFERENT")
             .nbn("urn:uuid:123")
             .tar(tar)
-            .exportTimestamp(OffsetDateTime.of(2021, 1, 1, 1, 1, 1, 1, OffsetDateTime.now().getOffset()))
             .build();
 
         Mockito.when(UseCaseFixture.ocflObjectVersionRepository.findByNbn(Mockito.any()))

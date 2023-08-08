@@ -35,8 +35,6 @@ public interface OcflObjectVersionMapper {
 
     ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    @Mapping(source = "skeletonRecord", target = "skeletonRecord")
-    @Mapping(source = "metadata", target = "metadata")
     OcflObjectVersionParameters convert(OcflObjectVersionParametersDto versionDto);
 
     @Mapping(source = "tar.tarUuid", target = "tarUuid")

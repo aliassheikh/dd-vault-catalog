@@ -23,7 +23,11 @@ import io.dropwizard.testing.junit5.DropwizardAppExtension;
 import io.dropwizard.testing.junit5.DropwizardExtensionsSupport;
 import nl.knaw.dans.catalog.DdVaultCatalogApplication;
 import nl.knaw.dans.catalog.DdVaultCatalogConfiguration;
-import nl.knaw.dans.catalog.api.*;
+import nl.knaw.dans.catalog.api.OcflObjectVersionDto;
+import nl.knaw.dans.catalog.api.OcflObjectVersionParametersDto;
+import nl.knaw.dans.catalog.api.OcflObjectVersionRefDto;
+import nl.knaw.dans.catalog.api.TarDto;
+import nl.knaw.dans.catalog.api.TarParameterDto;
 import org.glassfish.jersey.client.JerseyClientBuilder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -51,17 +55,20 @@ class OcflObjectApiResourceIntegrationTest {
         var client = new JerseyClientBuilder().build();
         var metadata = getMetadata();
         var entity = new OcflObjectVersionParametersDto()
-            .exportTimestamp(OffsetDateTime.now())
+            .nbn("someNbn")
             .swordToken("sword:" + UUID.randomUUID())
             .dataSupplier("data supplier")
             .dataversePid("dataversePid")
             .dataversePidVersion("dataversePidVersion")
+            .datastation("datastation")
+            .deaccessioned(Boolean.FALSE)
+            .exporter("exporter")
+            .exporterVersion("exporterVersion")
             .otherId("otherId")
             .otherIdVersion("otherIdVersion")
             .ocflObjectPath("ocflObjectPath")
             .metadata(metadata)
-            .filePidToLocalPath("filePidToLocalPath")
-            .nbn("someNbn");
+            .filepidToLocalPath("filePidToLocalPath");
 
         var str = EXT.getObjectMapper().writeValueAsString(entity);
 
@@ -78,6 +85,12 @@ class OcflObjectApiResourceIntegrationTest {
             var dto = response.readEntity(OcflObjectVersionDto.class);
 
             assertEquals(version, dto.getObjectVersion());
+            assertEquals("someNbn", dto.getNbn());
+            assertEquals(entity.getSwordToken(), dto.getSwordToken());
+            assertEquals("datastation", dto.getDatastation());
+            assertEquals(Boolean.FALSE, dto.getDeaccessioned());
+            assertEquals("exporter", dto.getExporter());
+            assertEquals("exporterVersion", dto.getExporterVersion());
             assertEquals("data supplier", dto.getDataSupplier());
             assertEquals("dataversePid", dto.getDataversePid());
             assertEquals("dataversePidVersion", dto.getDataversePidVersion());
@@ -85,15 +98,14 @@ class OcflObjectApiResourceIntegrationTest {
             assertEquals("otherIdVersion", dto.getOtherIdVersion());
             assertEquals("ocflObjectPath", dto.getOcflObjectPath());
             assertEquals(metadata, dto.getMetadata());
-            assertEquals("filePidToLocalPath", dto.getFilePidToLocalPath());
-            assertEquals("someNbn", dto.getNbn());
+            assertEquals("filePidToLocalPath", dto.getFilepidToLocalPath());
             assertEquals(bagId, dto.getBagId());
             assertNull(dto.getTarUuid());
         }
     }
 
     @Test
-    public void createOcflVersion_should_return_409_if_version_already_exists() throws Exception {
+    public void createOcflVersion_should_return_201_if_version_already_exists() throws Exception {
         var client = EXT.client();
         var entity = new OcflObjectVersionParametersDto()
             .dataSupplier("test")
@@ -112,8 +124,8 @@ class OcflObjectApiResourceIntegrationTest {
 
             assertEquals(201, response.getStatus());
 
-            try (var conflicted = client.target(url).request().put(Entity.json(str))) {
-                assertEquals(409, conflicted.getStatus());
+            try (var sameRecord = client.target(url).request().put(Entity.json(str))) {
+                assertEquals(201, sameRecord.getStatus());
             }
         }
     }
@@ -140,7 +152,7 @@ class OcflObjectApiResourceIntegrationTest {
         var tar = new TarParameterDto()
             .tarUuid(UUID.randomUUID())
             .vaultPath("somePath")
-            .archivalDate(OffsetDateTime.now())
+            .archivalTimestamp(OffsetDateTime.now())
             .ocflObjectVersions(List.of(new OcflObjectVersionRefDto().objectVersion(version).bagId(bagId)));
 
         // creating tar
@@ -249,6 +261,7 @@ class OcflObjectApiResourceIntegrationTest {
             "}";
 
         return new ObjectMapper().readValue(str, new TypeReference<>() {
+
         });
     }
 }

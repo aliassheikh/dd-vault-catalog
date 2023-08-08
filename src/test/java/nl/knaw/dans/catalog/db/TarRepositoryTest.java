@@ -53,7 +53,7 @@ class TarRepositoryTest {
             var tar = Tar.builder()
                 .tarUuid("uuid1")
                 .vaultPath("path")
-                .archivalDate(OffsetDateTime.now())
+                .archivalTimestamp(OffsetDateTime.now())
                 .build();
 
             var version1 = OcflObjectVersion.builder()
@@ -90,7 +90,7 @@ class TarRepositoryTest {
             var tar = Tar.builder()
                 .tarUuid("uuid1")
                 .vaultPath("path")
-                .archivalDate(OffsetDateTime.now())
+                .archivalTimestamp(OffsetDateTime.now())
                 .build();
 
             var version1 = OcflObjectVersion.builder()

@@ -25,7 +25,7 @@ import java.util.List;
 @Builder
 public class TarParameters {
     String vaultPath;
-    OffsetDateTime archivalDate;
+    OffsetDateTime archivalTimestamp;
     List<TarPartParameters> tarParts;
     List<OcflObjectVersionId> versions;
 }

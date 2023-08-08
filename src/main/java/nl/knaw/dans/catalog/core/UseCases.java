@@ -78,23 +78,17 @@ public class UseCases {
 
     @UnitOfWork
     public OcflObjectVersion createOcflObjectVersion(OcflObjectVersionId id, OcflObjectVersionParameters parameters) throws OcflObjectVersionAlreadyExistsException {
-        // in case of skeletonRecord, allow writing
-        var existingOcflObjectVersion = ocflObjectVersionRepository.findByBagIdAndVersion(id.getBagId(), id.getObjectVersion())
-            .filter(ocflObjectVersion -> !ocflObjectVersion.isSkeletonRecord());
-
-        if (existingOcflObjectVersion.isPresent()) {
-            throw new OcflObjectVersionAlreadyExistsException(id.getBagId(), id.getObjectVersion());
-        }
-
         var ocflObjectVersion = ocflObjectVersionMapper.convert(parameters);
         ocflObjectVersion.setObjectVersion(id.getObjectVersion());
         ocflObjectVersion.setBagId(id.getBagId());
 
+        log.info("Creating new OCFL object version with bagId {} and version {}: {}", id.getBagId(), id.getObjectVersion(), ocflObjectVersion);
+        ocflObjectVersionRepository.save(ocflObjectVersion);
+
         log.info("Indexing OCFL object version in search index: {}", ocflObjectVersion.getId());
         searchIndex.indexOcflObjectVersion(ocflObjectVersion);
 
-        log.info("Creating new OCFL object version with bagId {} and version {}: {}", id.getBagId(), id.getObjectVersion(), ocflObjectVersion);
-        return ocflObjectVersionRepository.save(ocflObjectVersion);
+        return ocflObjectVersion;
     }
 
     @UnitOfWork
@@ -160,7 +154,7 @@ public class UseCases {
         }
 
         var parts = params.getTarParts().stream().map(tarMapper::convert).collect(Collectors.toList());
-        tar.setArchivalDate(params.getArchivalDate());
+        tar.setArchivalTimestamp(params.getArchivalTimestamp());
         tar.setVaultPath(params.getVaultPath());
         tar.setTarParts(parts);
         tar.setOcflObjectVersions(ocflObjectVersions);

@@ -57,50 +57,72 @@ public class OcflObjectVersion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(name = "bag_id", nullable = false)
     private String bagId;
+
     @Column(name = "object_version", nullable = false)
     private Integer objectVersion;
-    @Column(name = "created", nullable = false, updatable = false)
-    @Setter(AccessLevel.PACKAGE)
-    private OffsetDateTime created;
-    @Column(name = "updated")
-    @Setter(AccessLevel.PACKAGE)
-    private OffsetDateTime updated;
+
+    @Column(name = "nbn")
+    private String nbn;
+
+    @Column(name = "sword_token")
+    private String swordToken;
+
+    @Column(name = "data_supplier")
+    private String dataSupplier;
+
     @ManyToOne(cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
     @JoinColumn(name = "tar_uuid")
     private Tar tar;
-    @Column(name = "data_supplier")
-    private String dataSupplier;
-    @Column(name = "dataverse_pid")
-    private String dataversePid;
-    @Column(name = "dataverse_pid_version")
-    private String dataversePidVersion;
-    @Column(name = "nbn")
-    private String nbn;
-    @Column(name = "other_id")
-    private String otherId;
-    @Column(name = "other_id_version")
-    private String otherIdVersion;
-    @Column(name = "sword_token")
-    private String swordToken;
+
     @Column(name = "ocfl_object_path")
     private String ocflObjectPath;
+
+    @Column(name = "datastation")
+    private String datastation;
+
+    @Column(name = "dataverse_pid")
+    private String dataversePid;
+
+    @Column(name = "dataverse_pid_version")
+    private String dataversePidVersion;
+
+    @Column(name = "other_id")
+    private String otherId;
+
+    @Column(name = "other_id_version")
+    private String otherIdVersion;
+
     @Column(name = "metadata")
     private String metadata;
+
     @Column(name = "filepid_to_local_path")
-    private String filePidToLocalPath;
-    @Column(name = "export_timestamp")
-    private OffsetDateTime exportTimestamp;
+    private String filepidToLocalPath;
+
+    @Column
+    private Boolean deaccessioned;
+
+    @Column
+    private String exporter;
+
+    @Column(name = "exporter_version")
+    private String exporterVersion;
+
     @Column(name = "skeleton_record", nullable = false, columnDefinition = "boolean default false")
     private boolean skeletonRecord = false;
 
+    @Column(name = "created", nullable = false, updatable = false)
+    @Setter(AccessLevel.PACKAGE)
+    private OffsetDateTime created;
+
+    @Column(name = "updated")
+    @Setter(AccessLevel.PACKAGE)
+    private OffsetDateTime updated;
+
     public OcflObjectVersionId getId() {
         return new OcflObjectVersionId(bagId, objectVersion);
-    }
-
-    public OffsetDateTime getExportTimestamp() {
-        return exportTimestamp;
     }
 
     @Override

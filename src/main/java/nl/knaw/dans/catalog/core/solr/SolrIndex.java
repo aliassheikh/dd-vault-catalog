@@ -21,26 +21,26 @@ import nl.knaw.dans.catalog.DdVaultCatalogConfiguration;
 import nl.knaw.dans.catalog.core.SearchIndex;
 import nl.knaw.dans.catalog.db.OcflObjectVersion;
 import nl.knaw.dans.catalog.db.Tar;
-import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.Http2SolrClient;
 import org.apache.solr.common.SolrInputDocument;
 
-import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.stream.Collectors;
 
 @Slf4j
-public class SolrServiceImpl implements SearchIndex {
+public class SolrIndex implements SearchIndex {
     private final Http2SolrClient solrClient;
     private final OcflObjectMetadataReader ocflObjectMetadataReader;
     private final String collection;
 
-    public SolrServiceImpl(DdVaultCatalogConfiguration.SolrConfig solrConfig, OcflObjectMetadataReader ocflObjectMetadataReader) {
+    public SolrIndex(DdVaultCatalogConfiguration.SolrConfig solrConfig, OcflObjectMetadataReader ocflObjectMetadataReader) {
         if (solrConfig != null) {
             solrClient = new Http2SolrClient.Builder(solrConfig.getUrl()).build();
             this.ocflObjectMetadataReader = ocflObjectMetadataReader;
             this.collection = solrConfig.getSchema();
+
+            log.info("Solr configured, urn: {}, collection: {}", solrConfig.getUrl(), this.collection);
         }
         else {
             solrClient = null;
@@ -65,7 +65,7 @@ public class SolrServiceImpl implements SearchIndex {
             solrClient.add(collection, documents);
             solrClient.commit(collection);
         }
-        catch (SolrServerException | IOException e) {
+        catch (Throwable e) {
             log.error("Error indexing TAR {}", tar.getTarUuid(), e);
         }
     }
@@ -84,9 +84,8 @@ public class SolrServiceImpl implements SearchIndex {
             solrClient.add(collection, doc);
             solrClient.commit(collection);
         }
-        catch (SolrServerException | IOException e) {
+        catch (Throwable e) {
             log.error("Error indexing OcflObjectVersion {}", ocflObjectVersion.getId(), e);
-            e.printStackTrace();
         }
     }
 
@@ -100,14 +99,16 @@ public class SolrServiceImpl implements SearchIndex {
         doc.setField("nbn", ocflObjectVersion.getNbn());
         doc.setField("dataverse_pid", ocflObjectVersion.getDataversePid());
         doc.setField("dataverse_pid_version", ocflObjectVersion.getDataversePidVersion());
-        doc.setField("datastation", ocflObjectVersion.getDataSupplier());
+        doc.setField("datastation", ocflObjectVersion.getDatastation());
         doc.setField("data_supplier", ocflObjectVersion.getDataSupplier());
         doc.setField("sword_token", ocflObjectVersion.getSwordToken());
         doc.setField("other_id", ocflObjectVersion.getOtherId());
         doc.setField("other_id_version", ocflObjectVersion.getOtherIdVersion());
-        doc.setField("filepid_to_local_path", ocflObjectVersion.getFilePidToLocalPath());
+        doc.setField("filepid_to_local_path", ocflObjectVersion.getFilepidToLocalPath());
         doc.setField("ocfl_object_path", ocflObjectVersion.getOcflObjectPath());
-        doc.setField("export_timestamp", formatDate(ocflObjectVersion.getExportTimestamp()));
+        doc.setField("deaccessioned", ocflObjectVersion.getDeaccessioned());
+        doc.setField("exporter", ocflObjectVersion.getExporter());
+        doc.setField("exporter_version", ocflObjectVersion.getExporterVersion());
 
         // make the ID's searchable
         doc.addField("_text_", ocflObjectVersion.getId().getBagId().replace("urn:uuid:", ""));
@@ -116,7 +117,7 @@ public class SolrServiceImpl implements SearchIndex {
         if (ocflObjectVersion.getTar() != null) {
             doc.setField("tar_id", ocflObjectVersion.getTar().getTarUuid());
             doc.setField("tar_vault_path", ocflObjectVersion.getTar().getVaultPath());
-            doc.setField("tar_archival_date", formatDate(ocflObjectVersion.getTar().getArchivalDate()));
+            doc.setField("tar_archival_date", formatDate(ocflObjectVersion.getTar().getArchivalTimestamp()));
 
             for (var tarPart : ocflObjectVersion.getTar().getTarParts()) {
                 doc.addField("tar_part_name", tarPart.getPartName());

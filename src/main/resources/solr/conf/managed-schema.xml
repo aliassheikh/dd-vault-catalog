@@ -203,7 +203,9 @@
     <field name="dataverse_pid_version" type="string" stored="true" indexed="true"/>
     <field name="sword_token" type="string" stored="true" indexed="true"/>
     <field name="filepid_to_local_path" type="string" stored="true" indexed="true"/>
-    <field name="export_timestamp" type="pdates" stored="true" indexed="true"/>
+    <field name="deaccessioned" type="boolean" stored="true" indexed="true"/>
+    <field name="exporter" type="string" stored="true" indexed="true"/>
+    <field name="exporter_version" type="string" stored="true" indexed="true"/>
     <field name="tar_id" type="string" stored="true" indexed="true"/>
     <field name="tar_vault_path" type="descendent_path" stored="true" indexed="true"/>
     <field name="tar_archival_date" type="pdates" indexed="true"/>

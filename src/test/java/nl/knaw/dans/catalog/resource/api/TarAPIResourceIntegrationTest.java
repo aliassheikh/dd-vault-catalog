@@ -62,7 +62,7 @@ class TarAPIResourceIntegrationTest {
     public void createEmptyTar_should_return_200() throws Exception {
         var client = new JerseyClientBuilder().build();
         var entity = new TarParameterDto()
-            .archivalDate(OffsetDateTime.now())
+            .archivalTimestamp(OffsetDateTime.now())
             .vaultPath("test")
             .tarUuid(UUID.randomUUID());
 
@@ -92,7 +92,7 @@ class TarAPIResourceIntegrationTest {
             .checksumValue("even more secret");
 
         var entity = new TarParameterDto()
-            .archivalDate(OffsetDateTime.now())
+            .archivalTimestamp(OffsetDateTime.now())
             .vaultPath("test")
             .tarUuid(UUID.randomUUID())
             .tarParts(List.of(part1, part2));
@@ -128,7 +128,7 @@ class TarAPIResourceIntegrationTest {
             .objectVersion(1);
 
         var entity = new TarParameterDto()
-            .archivalDate(OffsetDateTime.now())
+            .archivalTimestamp(OffsetDateTime.now())
             .vaultPath("test")
             .tarUuid(UUID.randomUUID())
             .ocflObjectVersions(List.of(ocfl1))
@@ -158,7 +158,7 @@ class TarAPIResourceIntegrationTest {
             .otherId("random id"));
 
         var entity = new TarParameterDto()
-            .archivalDate(OffsetDateTime.now())
+            .archivalTimestamp(OffsetDateTime.now())
             .vaultPath("test")
             .tarUuid(UUID.randomUUID())
             .ocflObjectVersions(List.of(new OcflObjectVersionRefDto().bagId(version.getBagId()).objectVersion(version.getObjectVersion())))
