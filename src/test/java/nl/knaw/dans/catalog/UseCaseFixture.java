@@ -15,23 +15,24 @@
  */
 package nl.knaw.dans.catalog;
 
-import nl.knaw.dans.catalog.core.OcflObjectVersionRepository;
 import nl.knaw.dans.catalog.core.SearchIndex;
-import nl.knaw.dans.catalog.core.TarRepository;
 import nl.knaw.dans.catalog.core.UseCases;
+import nl.knaw.dans.catalog.db.OcflObjectVersionDao;
+import nl.knaw.dans.catalog.db.TarDao;
 import org.mockito.Mockito;
 
 public class UseCaseFixture {
-    public static final OcflObjectVersionRepository ocflObjectVersionRepository = Mockito.mock(OcflObjectVersionRepository.class);
-    public static final TarRepository tarRepository = Mockito.mock(TarRepository.class);
+    public static final OcflObjectVersionDao ocflObjectVersionDao = Mockito.mock(OcflObjectVersionDao.class);
+    public static final TarDao tarDao = Mockito.mock(TarDao.class);
     public static final SearchIndex searchIndex = Mockito.mock(SearchIndex.class);
+
     public static final UseCases useCases = new UseCases(
-        ocflObjectVersionRepository,
-        tarRepository,
+        ocflObjectVersionDao,
+        tarDao,
         searchIndex
     );
 
     public static void reset() {
-        Mockito.reset(ocflObjectVersionRepository, tarRepository, searchIndex);
+        Mockito.reset(ocflObjectVersionDao, tarDao, searchIndex);
     }
 }

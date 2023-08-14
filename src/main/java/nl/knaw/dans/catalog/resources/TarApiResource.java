@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package nl.knaw.dans.catalog.resource.api;
+package nl.knaw.dans.catalog.resources;
 
 import lombok.extern.slf4j.Slf4j;
 import nl.knaw.dans.catalog.api.TarParameterDto;
@@ -23,20 +23,16 @@ import nl.knaw.dans.catalog.core.exception.OcflObjectVersionAlreadyInTarExceptio
 import nl.knaw.dans.catalog.core.exception.OcflObjectVersionNotFoundException;
 import nl.knaw.dans.catalog.core.exception.TarAlreadyExistsException;
 import nl.knaw.dans.catalog.core.exception.TarNotFoundException;
-import nl.knaw.dans.catalog.resource.TarApi;
-import nl.knaw.dans.catalog.resource.mappers.TarMapper;
 
-import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import java.util.UUID;
 
 @Slf4j
-public class TarAPIResource implements TarApi {
-    private final TarMapper tarMapper = TarMapper.INSTANCE;
+public class TarApiResource implements TarApi {
     private final UseCases useCases;
 
-    public TarAPIResource(UseCases useCases) {
+    public TarApiResource(UseCases useCases) {
         this.useCases = useCases;
     }
 
@@ -45,9 +41,7 @@ public class TarAPIResource implements TarApi {
         log.info("Received new TAR {}, storing in database", tarDto);
 
         try {
-            var result = useCases.createTar(tarDto.getTarUuid().toString(), tarMapper.convert(tarDto));
-            var converted = tarMapper.convert(result);
-            return Response.ok(converted).status(201).build();
+            return Response.ok(useCases.createTar(tarDto.getTarUuid().toString(), tarDto)).status(201).build();
         }
         catch (OcflObjectVersionAlreadyInTarException | TarAlreadyExistsException e) {
             log.error(e.getMessage());
@@ -57,17 +51,12 @@ public class TarAPIResource implements TarApi {
             log.error(e.getMessage());
             throw new WebApplicationException(e.getMessage(), Response.Status.NOT_FOUND);
         }
-        catch (Throwable e) {
-            log.error(e.getMessage(), e);
-            throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
-        }
     }
 
     @Override
     public Response getArchiveById(UUID id) {
         log.debug("Fetching TAR with id {}", id);
         var result = useCases.findTarById(id.toString())
-            .map(tarMapper::convert)
             .orElseThrow(() -> new WebApplicationException(Response.Status.NOT_FOUND));
 
         return Response.ok(result).build();
@@ -78,10 +67,7 @@ public class TarAPIResource implements TarApi {
         log.info("Received existing TAR {}, ID is {}, storing in database", tarDto, id);
 
         try {
-            var result = useCases.updateTar(id.toString(), tarMapper.convert(tarDto));
-            var response = tarMapper.convert(result);
-
-            return Response.ok(response).build();
+            return Response.ok(useCases.updateTar(id.toString(), tarDto)).build();
         }
         catch (OcflObjectVersionAlreadyInTarException e) {
             log.error(e.getMessage());

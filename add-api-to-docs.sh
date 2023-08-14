@@ -1,6 +1,5 @@
-#!/usr/bin/env bash
 #
-# Copyright (C) 2016 DANS - Data Archiving and Networked Services (info@dans.knaw.nl)
+# Copyright (C) 2022 DANS - Data Archiving and Networked Services (info@dans.knaw.nl)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,15 +14,8 @@
 # limitations under the License.
 #
 
-set -e
+mvn dans-build-resources:get-helper-script
+sh target/add-swagger-ui.sh
 
-REMOTE="https://@github.com/${GITHUB_REPOSITORY}"
-git remote set-url origin ${REMOTE}
-
-pip install -r .github/workflows/mkdocs/requirements.txt
-
-./add-api-to-docs.sh
-
-echo "START deploying docs to GitHub pages..."
-mkdocs gh-deploy --force
-echo "DONE deploying docs to GitHub pages."
+mvn initialize
+cp target/openapi/dd-vault-catalog-api.yml docs/api.yml

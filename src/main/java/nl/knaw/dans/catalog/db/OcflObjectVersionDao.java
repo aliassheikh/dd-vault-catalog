@@ -16,8 +16,8 @@
 package nl.knaw.dans.catalog.db;
 
 import io.dropwizard.hibernate.AbstractDAO;
-import nl.knaw.dans.catalog.core.OcflObjectVersionRepository;
-import nl.knaw.dans.catalog.core.domain.OcflObjectVersionId;
+import nl.knaw.dans.catalog.api.OcflObjectVersionRefDto;
+import nl.knaw.dans.catalog.core.OcflObjectVersion;
 import nl.knaw.dans.catalog.core.exception.OcflObjectVersionNotFoundException;
 import org.hibernate.SessionFactory;
 
@@ -27,12 +27,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-public class OcflObjectVersionDAO extends AbstractDAO<OcflObjectVersion> implements OcflObjectVersionRepository {
-    public OcflObjectVersionDAO(SessionFactory sessionFactory) {
+public class OcflObjectVersionDao extends AbstractDAO<OcflObjectVersion>  {
+    public OcflObjectVersionDao(SessionFactory sessionFactory) {
         super(sessionFactory);
     }
 
-    @Override
     public Optional<OcflObjectVersion> findByBagIdAndVersion(String bagId, int version) {
         return query("from OcflObjectVersion where bagId = :bagId and objectVersion = :version order by id")
             .setParameter("bagId", bagId)
@@ -40,7 +39,6 @@ public class OcflObjectVersionDAO extends AbstractDAO<OcflObjectVersion> impleme
             .uniqueResultOptional();
     }
 
-    @Override
     public List<OcflObjectVersion> findAllByBagId(String bagId) {
         return new ArrayList<>(
             query("from OcflObjectVersion where bagId = :bagId order by objectVersion desc")
@@ -49,12 +47,10 @@ public class OcflObjectVersionDAO extends AbstractDAO<OcflObjectVersion> impleme
         );
     }
 
-    @Override
     public List<OcflObjectVersion> findAll() {
         return new ArrayList<>(list(query("from OcflObjectVersion")));
     }
 
-    @Override
     public List<OcflObjectVersion> findAllBySwordToken(String swordToken) {
         return new ArrayList<>(
             query("from OcflObjectVersion where swordToken = :swordToken order by objectVersion desc")
@@ -63,7 +59,6 @@ public class OcflObjectVersionDAO extends AbstractDAO<OcflObjectVersion> impleme
         );
     }
 
-    @Override
     public OcflObjectVersion save(OcflObjectVersion ocflObjectVersion) {
         findByBagIdAndVersion(ocflObjectVersion.getBagId(), ocflObjectVersion.getObjectVersion())
             .ifPresent(item -> {
@@ -79,8 +74,7 @@ public class OcflObjectVersionDAO extends AbstractDAO<OcflObjectVersion> impleme
         return persist(merged);
     }
 
-    @Override
-    public List<OcflObjectVersion> findAll(Collection<OcflObjectVersionId> versions) throws OcflObjectVersionNotFoundException {
+    public List<OcflObjectVersion> findAll(Collection<OcflObjectVersionRefDto> versions) throws OcflObjectVersionNotFoundException {
         var ocflObjectVersions = new ArrayList<OcflObjectVersion>();
 
         if (versions != null) {
@@ -97,7 +91,7 @@ public class OcflObjectVersionDAO extends AbstractDAO<OcflObjectVersion> impleme
         return ocflObjectVersions;
     }
 
-    @Override
+
     public List<OcflObjectVersion> findByNbn(String nbn) {
         return new ArrayList<>(
             list(

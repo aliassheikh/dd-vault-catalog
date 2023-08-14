@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package nl.knaw.dans.catalog.db;
+package nl.knaw.dans.catalog.core;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -23,7 +23,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import nl.knaw.dans.catalog.core.domain.OcflObjectVersionId;
+import nl.knaw.dans.catalog.api.OcflObjectVersionRefDto;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
@@ -114,15 +114,13 @@ public class OcflObjectVersion {
     private boolean skeletonRecord = false;
 
     @Column(name = "created", nullable = false, updatable = false)
-    @Setter(AccessLevel.PACKAGE)
     private OffsetDateTime created;
 
     @Column(name = "updated")
-    @Setter(AccessLevel.PACKAGE)
     private OffsetDateTime updated;
 
-    public OcflObjectVersionId getId() {
-        return new OcflObjectVersionId(bagId, objectVersion);
+    public OcflObjectVersionRefDto getId() {
+        return new OcflObjectVersionRefDto().bagId(bagId).objectVersion(objectVersion);
     }
 
     @Override
@@ -140,11 +138,11 @@ public class OcflObjectVersion {
         return getClass().hashCode();
     }
 
-    Long getInternalId() {
+    public Long getInternalId() {
         return id;
     }
 
-    void setInternalId(Long id) {
+    public void setInternalId(Long id) {
         this.id = id;
     }
 }

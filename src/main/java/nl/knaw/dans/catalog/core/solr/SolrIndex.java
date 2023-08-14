@@ -18,9 +18,9 @@ package nl.knaw.dans.catalog.core.solr;
 
 import lombok.extern.slf4j.Slf4j;
 import nl.knaw.dans.catalog.DdVaultCatalogConfiguration;
+import nl.knaw.dans.catalog.core.OcflObjectVersion;
 import nl.knaw.dans.catalog.core.SearchIndex;
-import nl.knaw.dans.catalog.db.OcflObjectVersion;
-import nl.knaw.dans.catalog.db.Tar;
+import nl.knaw.dans.catalog.core.Tar;
 import org.apache.solr.client.solrj.impl.Http2SolrClient;
 import org.apache.solr.common.SolrInputDocument;
 

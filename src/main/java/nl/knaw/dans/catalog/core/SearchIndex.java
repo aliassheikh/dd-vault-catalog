@@ -15,9 +15,6 @@
  */
 package nl.knaw.dans.catalog.core;
 
-import nl.knaw.dans.catalog.db.OcflObjectVersion;
-import nl.knaw.dans.catalog.db.Tar;
-
 public interface SearchIndex {
 
     void indexTar(Tar tar);

@@ -16,13 +16,14 @@
     limitations under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>nl.knaw.dans</groupId>
         <artifactId>dd-parent</artifactId>
-        <version>0.19.0</version>
+        <version>0.21.0</version>
     </parent>
 
     <artifactId>dd-vault-catalog</artifactId>
@@ -39,6 +40,9 @@
 
     <properties>
         <main-class>nl.knaw.dans.catalog.DdVaultCatalogApplication</main-class>
+        <dd-vault-catalog-api.version>0.0.1-SNAPSHOT</dd-vault-catalog-api.version>
+        <openapi-packagename>nl.knaw.dans.catalog</openapi-packagename>
+        <openapi-spec>dd-vault-catalog-api.yml</openapi-spec>
     </properties>
 
     <dependencies>
@@ -169,38 +173,44 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.openapitools</groupId>
-                <artifactId>openapi-generator-maven-plugin</artifactId>
-                <version>6.3.0</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
                     <execution>
+                        <phase>initialize</phase>
                         <goals>
-                            <goal>generate</goal>
+                            <goal>unpack</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>${project.basedir}/docs/api.yml</inputSpec>
-                            <generatorName>jaxrs-spec</generatorName>
-                            <generateModelTests>false</generateModelTests>
-                            <generateApiTests>false</generateApiTests>
-                            <modelNameSuffix>Dto</modelNameSuffix>
-                            <configOptions>
-                                <apiPackage>nl.knaw.dans.catalog.resource</apiPackage>
-                                <modelPackage>nl.knaw.dans.catalog.api</modelPackage>
-                                <invokerPackage>nl.knaw.dans.catalog.api</invokerPackage>
-                                <sourceFolder>src/gen/java/main</sourceFolder>
-                                <dateLibrary>java8</dateLibrary>
-                                <delegatePattern>true</delegatePattern>
-                                <interfaceOnly>true</interfaceOnly>
-                                <returnResponse>true</returnResponse>
-                                <useSwaggerAnnotations>false</useSwaggerAnnotations>
-                            </configOptions>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>nl.knaw.dans</groupId>
+                                    <artifactId>dd-vault-catalog-api</artifactId>
+                                    <version>${dd-vault-catalog-api.version}</version>
+                                    <outputDirectory>${project.build.directory}/openapi</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration combine.children="override">
+                            <generatorName>jaxrs-spec</generatorName>
+                            <inputSpec>${project.build.directory}/openapi/dd-vault-catalog-api.yml</inputSpec>
+                            <apiPackage>nl.knaw.dans.catalog.resources</apiPackage>
+                            <modelPackage>nl.knaw.dans.catalog.api</modelPackage>
+                            <invokerPackage>nl.knaw.dans.catalog.resources</invokerPackage>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

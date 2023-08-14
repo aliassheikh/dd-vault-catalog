@@ -19,6 +19,7 @@ package nl.knaw.dans.catalog;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import io.dropwizard.Application;
 import io.dropwizard.hibernate.HibernateBundle;
+import io.dropwizard.hibernate.UnitOfWorkAwareProxyFactory;
 import io.dropwizard.jersey.errors.ErrorEntityWriter;
 import io.dropwizard.jersey.errors.ErrorMessage;
 import io.dropwizard.setup.Bootstrap;
@@ -26,11 +27,17 @@ import io.dropwizard.setup.Environment;
 import io.dropwizard.views.View;
 import io.dropwizard.views.ViewBundle;
 import nl.knaw.dans.catalog.cli.ReindexCommand;
-import nl.knaw.dans.catalog.resource.api.DefaultApiResource;
-import nl.knaw.dans.catalog.resource.api.OcflObjectApiResource;
-import nl.knaw.dans.catalog.resource.api.TarAPIResource;
-import nl.knaw.dans.catalog.resource.view.ErrorView;
-import nl.knaw.dans.catalog.resource.web.ArchiveDetailResource;
+import nl.knaw.dans.catalog.core.SearchIndex;
+import nl.knaw.dans.catalog.core.UseCases;
+import nl.knaw.dans.catalog.core.solr.OcflObjectMetadataReader;
+import nl.knaw.dans.catalog.core.solr.SolrIndex;
+import nl.knaw.dans.catalog.db.OcflObjectVersionDao;
+import nl.knaw.dans.catalog.db.TarDao;
+import nl.knaw.dans.catalog.resources.ArchiveDetailResource;
+import nl.knaw.dans.catalog.resources.DefaultApiResource;
+import nl.knaw.dans.catalog.resources.ErrorView;
+import nl.knaw.dans.catalog.resources.OcflObjectApiResource;
+import nl.knaw.dans.catalog.resources.TarApiResource;
 
 import javax.ws.rs.core.MediaType;
 
@@ -57,10 +64,10 @@ public class DdVaultCatalogApplication extends Application<DdVaultCatalogConfigu
 
     @Override
     public void run(final DdVaultCatalogConfiguration configuration, final Environment environment) {
-        var useCases = UseCasesBuilder.build(configuration, hibernateBundle);
+        var useCases = buildUseCases(configuration);
 
         environment.jersey().register(new DefaultApiResource());
-        environment.jersey().register(new TarAPIResource(useCases));
+        environment.jersey().register(new TarApiResource(useCases));
         environment.jersey().register(new OcflObjectApiResource(useCases));
         environment.jersey().register(new ArchiveDetailResource(useCases));
         environment.jersey().register(new ErrorEntityWriter<ErrorMessage, View>(MediaType.TEXT_HTML_TYPE, View.class) {
@@ -70,5 +77,26 @@ public class DdVaultCatalogApplication extends Application<DdVaultCatalogConfigu
                 return new ErrorView(errorMessage);
             }
         });
+    }
+
+    private UseCases buildUseCases(DdVaultCatalogConfiguration configuration) {
+        var ocflObjectMetadataReader = new OcflObjectMetadataReader();
+        var searchIndex = new SolrIndex(configuration.getSolr(), ocflObjectMetadataReader);
+        var ocflObjectVersionDao = new OcflObjectVersionDao(hibernateBundle.getSessionFactory());
+        var tarDao = new TarDao(hibernateBundle.getSessionFactory());
+
+        return new UnitOfWorkAwareProxyFactory(hibernateBundle)
+            .create(UseCases.class,
+                new Class[] {
+                    OcflObjectVersionDao.class,
+                    TarDao.class,
+                    SearchIndex.class,
+                },
+                new Object[] {
+                    ocflObjectVersionDao,
+                    tarDao,
+                    searchIndex
+                }
+            );
     }
 }

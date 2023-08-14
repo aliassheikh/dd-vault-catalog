@@ -19,6 +19,9 @@ package nl.knaw.dans.catalog.db;
 import io.dropwizard.testing.junit5.DAOTestExtension;
 import io.dropwizard.testing.junit5.DropwizardExtensionsSupport;
 import lombok.extern.slf4j.Slf4j;
+import nl.knaw.dans.catalog.core.OcflObjectVersion;
+import nl.knaw.dans.catalog.core.Tar;
+import nl.knaw.dans.catalog.core.TarPart;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,7 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(DropwizardExtensionsSupport.class)
 @Slf4j
-class TarRepositoryTest {
+class TarDaoTest {
     //
     private final DAOTestExtension daoTestRule = DAOTestExtension.newBuilder()
         .addEntityClass(Tar.class)
@@ -38,13 +41,13 @@ class TarRepositoryTest {
         .addEntityClass(OcflObjectVersion.class)
         .build();
 
-    private TarDAO tarRepository;
-    private OcflObjectVersionDAO ocflObjectVersionRepository;
+    private TarDao tarRepository;
+    private OcflObjectVersionDao ocflObjectVersionRepository;
 
     @BeforeEach
     void setUp() {
-        tarRepository = new TarDAO(daoTestRule.getSessionFactory());
-        ocflObjectVersionRepository = new OcflObjectVersionDAO(daoTestRule.getSessionFactory());
+        tarRepository = new TarDao(daoTestRule.getSessionFactory());
+        ocflObjectVersionRepository = new OcflObjectVersionDao(daoTestRule.getSessionFactory());
     }
 
     @Test

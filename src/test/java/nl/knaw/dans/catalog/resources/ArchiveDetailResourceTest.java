@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.knaw.dans.catalog.resource.web;
+package nl.knaw.dans.catalog.resources;
 
 import com.codahale.metrics.MetricRegistry;
 import freemarker.template.Configuration;
@@ -22,8 +22,9 @@ import io.dropwizard.testing.junit5.ResourceExtension;
 import io.dropwizard.views.ViewMessageBodyWriter;
 import io.dropwizard.views.freemarker.FreemarkerViewRenderer;
 import nl.knaw.dans.catalog.UseCaseFixture;
-import nl.knaw.dans.catalog.db.OcflObjectVersion;
-import nl.knaw.dans.catalog.db.Tar;
+import nl.knaw.dans.catalog.core.OcflObjectVersion;
+import nl.knaw.dans.catalog.core.Tar;
+import nl.knaw.dans.catalog.resources.ArchiveDetailResource;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -51,7 +52,7 @@ class ArchiveDetailResourceTest {
     @Test
     void getOK() {
         var tar = Tar.builder()
-            .tarUuid("uuid")
+            .tarUuid("7905c66e-3a91-487b-baa4-afae5d123e59")
             .vaultPath("path")
             .archivalTimestamp(OffsetDateTime.now())
             .build();
@@ -60,7 +61,7 @@ class ArchiveDetailResourceTest {
             .bagId("bagid")
             .objectVersion(2)
             .otherId("OTHER ID")
-            .nbn("urn:uuid:123")
+            .nbn("urn:uuid:f6626f32-b026-4dcf-85da-1ec03b148dfc")
             .tar(tar)
             .build();
 
@@ -68,14 +69,14 @@ class ArchiveDetailResourceTest {
             .bagId("bagid")
             .objectVersion(1)
             .otherId("OTHER ID DIFFERENT")
-            .nbn("urn:uuid:123")
+            .nbn("urn:uuid:f6626f32-b026-4dcf-85da-1ec03b148dfc")
             .tar(tar)
             .build();
 
-        Mockito.when(UseCaseFixture.ocflObjectVersionRepository.findByNbn(Mockito.any()))
+        Mockito.when(UseCaseFixture.ocflObjectVersionDao.findByNbn(Mockito.any()))
             .thenReturn(List.of(ocflObjectVersion1, ocflObjectVersion2));
 
-        var response = EXT.target("/nbn/urn:uuid:123")
+        var response = EXT.target("/nbn/urn:uuid:7905c66e-3a91-487b-baa4-afae5d123e59")
             .request()
             .accept(MediaType.TEXT_HTML_TYPE)
             .get(Response.class);
@@ -85,7 +86,7 @@ class ArchiveDetailResourceTest {
 
     @Test
     void getMissingNBN() {
-        Mockito.when(UseCaseFixture.ocflObjectVersionRepository.findByNbn(Mockito.any()))
+        Mockito.when(UseCaseFixture.ocflObjectVersionDao.findByNbn(Mockito.any()))
             .thenReturn(List.of());
 
         var response = EXT.target("/nbn/urn:uuid:123")

@@ -13,23 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.knaw.dans.catalog.db.mappers;
+package nl.knaw.dans.catalog.resources;
 
-import nl.knaw.dans.catalog.core.domain.TarParameters;
-import nl.knaw.dans.catalog.core.domain.TarPartParameters;
-import nl.knaw.dans.catalog.db.Tar;
-import nl.knaw.dans.catalog.db.TarPart;
-import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
+import lombok.extern.slf4j.Slf4j;
 
-@Mapper
-public interface TarMapper {
+import javax.ws.rs.core.Response;
 
-    TarMapper INSTANCE = Mappers.getMapper(TarMapper.class);
+@Slf4j
+public class DefaultApiResource implements DefaultApi {
 
-    Tar convert(TarParameters parameters);
-
-    TarPart convert(TarPartParameters parameters);
-
-
+    @Override
+    public Response getInfo() {
+        // TODO figure out what the version means, and where to get it from
+        return Response.ok("DANS VAULT CATALOG SERVICE running v1.2.3").build();
+    }
 }

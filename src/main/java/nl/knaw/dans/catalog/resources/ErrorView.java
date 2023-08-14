@@ -14,27 +14,21 @@
  * limitations under the License.
  */
 
-package nl.knaw.dans.catalog.resource.view;
+package nl.knaw.dans.catalog.resources;
 
+import io.dropwizard.jersey.errors.ErrorMessage;
 import io.dropwizard.views.View;
-import nl.knaw.dans.catalog.db.OcflObjectVersion;
 
-import java.util.List;
+public class ErrorView extends View {
+    private final ErrorMessage errorMessage;
 
-public class ArchiveDetailView extends View {
-    private final List<OcflObjectVersion> ocflObjectVersions;
-
-    public ArchiveDetailView(List<OcflObjectVersion> ocflObjectVersions) {
-        super("ocfl-object-version.ftl");
-        this.ocflObjectVersions = ocflObjectVersions;
+    public ErrorView(ErrorMessage errorMessage) {
+        super("error.ftl");
+        this.errorMessage = errorMessage;
     }
 
-    public OcflObjectVersion getOcflObjectVersion() {
-        return ocflObjectVersions.get(0);
-    }
-
-    public List<OcflObjectVersion> getOtherOcflObjectVersions() {
-        return ocflObjectVersions;
+    public ErrorMessage getErrorMessage() {
+        return errorMessage;
     }
 
 }
