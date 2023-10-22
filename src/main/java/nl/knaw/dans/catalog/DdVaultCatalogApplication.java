@@ -17,15 +17,15 @@
 package nl.knaw.dans.catalog;
 
 import com.fasterxml.jackson.databind.SerializationFeature;
-import io.dropwizard.Application;
+import io.dropwizard.core.Application;
+import io.dropwizard.core.setup.Bootstrap;
+import io.dropwizard.core.setup.Environment;
 import io.dropwizard.hibernate.HibernateBundle;
 import io.dropwizard.hibernate.UnitOfWorkAwareProxyFactory;
 import io.dropwizard.jersey.errors.ErrorEntityWriter;
 import io.dropwizard.jersey.errors.ErrorMessage;
-import io.dropwizard.setup.Bootstrap;
-import io.dropwizard.setup.Environment;
-import io.dropwizard.views.View;
-import io.dropwizard.views.ViewBundle;
+import io.dropwizard.views.common.View;
+import io.dropwizard.views.common.ViewBundle;
 import nl.knaw.dans.catalog.cli.ReindexCommand;
 import nl.knaw.dans.catalog.core.SearchIndex;
 import nl.knaw.dans.catalog.core.UseCases;
