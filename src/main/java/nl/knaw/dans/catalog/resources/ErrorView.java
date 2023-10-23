@@ -17,7 +17,7 @@
 package nl.knaw.dans.catalog.resources;
 
 import io.dropwizard.jersey.errors.ErrorMessage;
-import io.dropwizard.views.View;
+import io.dropwizard.views.common.View;
 
 public class ErrorView extends View {
     private final ErrorMessage errorMessage;
