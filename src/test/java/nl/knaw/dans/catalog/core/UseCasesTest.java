@@ -37,8 +37,7 @@ class UseCasesTest {
     void createTar_should_throw_TarAlreadyExistsException_when_tar_already_exists() {
         var ocflObjectRepo = Mockito.mock(OcflObjectVersionDao.class);
         var tarRepo = Mockito.mock(TarDao.class);
-        var searchIndex = Mockito.mock(SearchIndex.class);
-        var usecases = new UseCases(ocflObjectRepo, tarRepo, searchIndex);
+        var usecases = new UseCases(ocflObjectRepo, tarRepo);
 
         Mockito.doReturn(Optional.of(Tar.builder().tarUuid("fake-id").build()))
             .when(tarRepo).getTarById(Mockito.eq("fake-id"));
@@ -52,8 +51,7 @@ class UseCasesTest {
     void createTar_should_throw_OcflObjectVersionAlreadyInTarException_if_versions_belong_to_another_tar() throws Exception {
         var ocflObjectRepo = Mockito.mock(OcflObjectVersionDao.class);
         var tarRepo = Mockito.mock(TarDao.class);
-        var searchIndex = Mockito.mock(SearchIndex.class);
-        var usecases = new UseCases(ocflObjectRepo, tarRepo, searchIndex);
+        var usecases = new UseCases(ocflObjectRepo, tarRepo);
 
         var ocflObjectVersion = OcflObjectVersion.builder()
             .bagId("bagid")
@@ -76,8 +74,7 @@ class UseCasesTest {
     void updateTar_should_not_throw_OcflObjectVersionAlreadyInTarException_if_version_belongs_to_same_tar() throws Exception {
         var ocflObjectRepo = Mockito.mock(OcflObjectVersionDao.class);
         var tarRepo = Mockito.mock(TarDao.class);
-        var searchIndex = Mockito.mock(SearchIndex.class);
-        var usecases = new UseCases(ocflObjectRepo, tarRepo, searchIndex);
+        var usecases = new UseCases(ocflObjectRepo, tarRepo);
         var tar = Tar.builder().tarUuid("fake-id").tarParts(new ArrayList<>()).build();
 
         var ocflObjectVersion = OcflObjectVersion.builder()

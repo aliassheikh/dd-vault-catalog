@@ -26,9 +26,7 @@ import io.dropwizard.jersey.errors.ErrorEntityWriter;
 import io.dropwizard.jersey.errors.ErrorMessage;
 import io.dropwizard.views.common.View;
 import io.dropwizard.views.common.ViewBundle;
-import nl.knaw.dans.catalog.core.SearchIndex;
 import nl.knaw.dans.catalog.core.UseCases;
-import nl.knaw.dans.catalog.core.solr.OcflObjectMetadataReader;
 import nl.knaw.dans.catalog.db.OcflObjectVersionDao;
 import nl.knaw.dans.catalog.db.TarDao;
 import nl.knaw.dans.catalog.resources.ArchiveDetailResource;
@@ -76,7 +74,6 @@ public class DdVaultCatalogApplication extends Application<DdVaultCatalogConfigu
     }
 
     private UseCases buildUseCases(DdVaultCatalogConfiguration configuration) {
-        var ocflObjectMetadataReader = new OcflObjectMetadataReader();
         var ocflObjectVersionDao = new OcflObjectVersionDao(hibernateBundle.getSessionFactory());
         var tarDao = new TarDao(hibernateBundle.getSessionFactory());
 
@@ -84,13 +81,11 @@ public class DdVaultCatalogApplication extends Application<DdVaultCatalogConfigu
             .create(UseCases.class,
                 new Class[] {
                     OcflObjectVersionDao.class,
-                    TarDao.class,
-                    SearchIndex.class,
+                    TarDao.class
                 },
                 new Object[] {
                     ocflObjectVersionDao,
-                    tarDao,
-                    null
+                    tarDao
                 }
             );
     }

@@ -43,7 +43,7 @@ public class UseCases {
     private final TarDao tarDao;
     private final Conversions conversions = Mappers.getMapper(Conversions.class);
 
-    public UseCases(OcflObjectVersionDao ocflObjectVersionDao, TarDao tarDao, SearchIndex searchIndex) {
+    public UseCases(OcflObjectVersionDao ocflObjectVersionDao, TarDao tarDao) {
         this.ocflObjectVersionDao = ocflObjectVersionDao;
         this.tarDao = tarDao;
     }
