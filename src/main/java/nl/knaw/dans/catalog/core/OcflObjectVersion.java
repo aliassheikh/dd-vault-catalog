@@ -28,14 +28,11 @@ import org.hibernate.Hibernate;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import java.time.OffsetDateTime;
@@ -72,10 +69,6 @@ public class OcflObjectVersion {
 
     @Column(name = "data_supplier")
     private String dataSupplier;
-
-    @ManyToOne(cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
-    @JoinColumn(name = "tar_uuid")
-    private Tar tar;
 
     @Column(name = "ocfl_object_path")
     private String ocflObjectPath;

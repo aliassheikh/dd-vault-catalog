@@ -39,9 +39,7 @@
 
     <properties>
         <main-class>nl.knaw.dans.catalog.DdVaultCatalogApplication</main-class>
-        <dd-vault-catalog-api.version>0.0.1-SNAPSHOT</dd-vault-catalog-api.version>
-        <openapi-packagename>nl.knaw.dans.catalog</openapi-packagename>
-        <openapi-spec>dd-vault-catalog-api.yml</openapi-spec>
+        <dd-vault-catalog-api.version>0.3.0-SNAPSHOT</dd-vault-catalog-api.version>
     </properties>
 
     <dependencies>

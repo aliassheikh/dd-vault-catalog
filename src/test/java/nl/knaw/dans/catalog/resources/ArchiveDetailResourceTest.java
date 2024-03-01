@@ -23,7 +23,6 @@ import io.dropwizard.views.common.ViewMessageBodyWriter;
 import io.dropwizard.views.freemarker.FreemarkerViewRenderer;
 import nl.knaw.dans.catalog.UseCaseFixture;
 import nl.knaw.dans.catalog.core.OcflObjectVersion;
-import nl.knaw.dans.catalog.core.Tar;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,7 +30,6 @@ import org.mockito.Mockito;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.time.OffsetDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -50,18 +48,12 @@ class ArchiveDetailResourceTest {
 
     @Test
     void getOK() {
-        var tar = Tar.builder()
-            .tarUuid("7905c66e-3a91-487b-baa4-afae5d123e59")
-            .vaultPath("path")
-            .archivalTimestamp(OffsetDateTime.now())
-            .build();
 
         var ocflObjectVersion1 = OcflObjectVersion.builder()
             .bagId("bagid")
             .objectVersion(2)
             .otherId("OTHER ID")
             .nbn("urn:uuid:f6626f32-b026-4dcf-85da-1ec03b148dfc")
-            .tar(tar)
             .build();
 
         var ocflObjectVersion2 = OcflObjectVersion.builder()
@@ -69,7 +61,6 @@ class ArchiveDetailResourceTest {
             .objectVersion(1)
             .otherId("OTHER ID DIFFERENT")
             .nbn("urn:uuid:f6626f32-b026-4dcf-85da-1ec03b148dfc")
-            .tar(tar)
             .build();
 
         Mockito.when(UseCaseFixture.ocflObjectVersionDao.findByNbn(Mockito.any()))

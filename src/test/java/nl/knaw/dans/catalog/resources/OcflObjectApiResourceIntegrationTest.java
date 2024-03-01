@@ -25,16 +25,11 @@ import nl.knaw.dans.catalog.DdVaultCatalogApplication;
 import nl.knaw.dans.catalog.DdVaultCatalogConfiguration;
 import nl.knaw.dans.catalog.api.OcflObjectVersionDto;
 import nl.knaw.dans.catalog.api.OcflObjectVersionParametersDto;
-import nl.knaw.dans.catalog.api.OcflObjectVersionRefDto;
-import nl.knaw.dans.catalog.api.TarDto;
-import nl.knaw.dans.catalog.api.TarParameterDto;
 import org.glassfish.jersey.client.JerseyClientBuilder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import javax.ws.rs.client.Entity;
-import java.time.OffsetDateTime;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -130,65 +125,7 @@ class OcflObjectApiResourceIntegrationTest {
         }
     }
 
-    @Test
-    public void getOcflVersion_should_return_existing_item_after_unassignment_from_tar() throws Exception {
-        var client = EXT.client();
-        var entity = new OcflObjectVersionParametersDto()
-            .dataSupplier("test")
-            .nbn("someNbn");
 
-        var str = EXT.getObjectMapper().writeValueAsString(entity);
-
-        var bagId = "urn:uuid:" + UUID.randomUUID();
-        var version = 1;
-
-        var url = String.format("http://localhost:%d/ocflObject/bagId/%s/version/%s", EXT.getLocalPort(), bagId, version);
-
-        // creating ocfl object
-        try (var response = client.target(url).request().put(Entity.json(str))) {
-            assertEquals(201, response.getStatus());
-        }
-
-        var tar = new TarParameterDto()
-            .tarUuid(UUID.randomUUID())
-            .vaultPath("somePath")
-            .archivalTimestamp(OffsetDateTime.now())
-            .ocflObjectVersions(List.of(new OcflObjectVersionRefDto().objectVersion(version).bagId(bagId)));
-
-        // creating tar
-        var apiUrl = String.format("http://localhost:%d/tar/", EXT.getLocalPort());
-        try (var response = client.target(apiUrl).request().post(Entity.json(tar))) {
-            assertEquals(201, response.getStatus());
-
-            var tarResponse = response.readEntity(TarDto.class);
-            assertEquals(bagId, tarResponse.getOcflObjectVersions().get(0).getBagId());
-        }
-
-        // see if the ocfl object version is bound to the tar
-        try (var response = client.target(url).request().get()) {
-            assertEquals(200, response.getStatus());
-
-            var ocflResponse = response.readEntity(OcflObjectVersionDto.class);
-            assertEquals(tar.getTarUuid(), ocflResponse.getTarUuid());
-            assertEquals(bagId, ocflResponse.getBagId());
-        }
-
-        // updating tar, but without the ocfl object
-        try (var response = client.target(apiUrl + tar.getTarUuid()).request().put(Entity.json(tar.ocflObjectVersions(List.of())))) {
-            assertEquals(200, response.getStatus());
-            var tarResponse = response.readEntity(TarDto.class);
-            assertEquals(0, tarResponse.getOcflObjectVersions().size());
-        }
-
-        // now verify the ocfl object version is still there, not bound to a TAR
-        try (var response = client.target(url).request().get()) {
-            assertEquals(200, response.getStatus());
-
-            var ocflResponse = response.readEntity(OcflObjectVersionDto.class);
-            assertNull(ocflResponse.getTarUuid());
-            assertEquals(bagId, ocflResponse.getBagId());
-        }
-    }
 
     @Test
     public void createOcflVersion_should_record_SkeletonRecord_property() throws Exception {

@@ -19,12 +19,10 @@ package nl.knaw.dans.catalog;
 import io.dropwizard.db.PooledDataSourceFactory;
 import io.dropwizard.hibernate.HibernateBundle;
 import nl.knaw.dans.catalog.core.OcflObjectVersion;
-import nl.knaw.dans.catalog.core.Tar;
-import nl.knaw.dans.catalog.core.TarPart;
 
 public class DdVaultHibernateBundle extends HibernateBundle<DdVaultCatalogConfiguration> {
     public DdVaultHibernateBundle() {
-        super(OcflObjectVersion.class, Tar.class, TarPart.class);
+        super(OcflObjectVersion.class);
     }
 
     @Override

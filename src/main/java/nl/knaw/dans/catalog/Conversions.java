@@ -20,13 +20,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.knaw.dans.catalog.api.OcflObjectVersionDto;
 import nl.knaw.dans.catalog.api.OcflObjectVersionParametersDto;
-import nl.knaw.dans.catalog.api.TarDto;
-import nl.knaw.dans.catalog.api.TarParameterDto;
-import nl.knaw.dans.catalog.api.TarPartDto;
-import nl.knaw.dans.catalog.api.TarPartParameterDto;
 import nl.knaw.dans.catalog.core.OcflObjectVersion;
-import nl.knaw.dans.catalog.core.Tar;
-import nl.knaw.dans.catalog.core.TarPart;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -41,19 +35,8 @@ public interface Conversions {
 
     ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    Tar convert(TarParameterDto parameters);
-
-    TarDto convert(Tar tar);
-
-    @Mapping(source = "tar.tarUuid", target = "tarUuid")
-    TarPartDto convert(TarPart tarPart);
-
-    TarPart convert(TarPartParameterDto parameters);
-
-
     OcflObjectVersion convert(OcflObjectVersionParametersDto parameters);
 
-    @Mapping(target = "tarUuid", source = "tar.tarUuid")
     OcflObjectVersionDto convert(OcflObjectVersion version);
 
     default UUID stringToUuid(String value) {

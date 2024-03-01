@@ -28,12 +28,10 @@ import io.dropwizard.views.common.View;
 import io.dropwizard.views.common.ViewBundle;
 import nl.knaw.dans.catalog.core.UseCases;
 import nl.knaw.dans.catalog.db.OcflObjectVersionDao;
-import nl.knaw.dans.catalog.db.TarDao;
 import nl.knaw.dans.catalog.resources.ArchiveDetailResource;
 import nl.knaw.dans.catalog.resources.DefaultApiResource;
 import nl.knaw.dans.catalog.resources.ErrorView;
 import nl.knaw.dans.catalog.resources.OcflObjectApiResource;
-import nl.knaw.dans.catalog.resources.TarApiResource;
 
 import javax.ws.rs.core.MediaType;
 
@@ -61,7 +59,6 @@ public class DdVaultCatalogApplication extends Application<DdVaultCatalogConfigu
         var useCases = buildUseCases(configuration);
 
         environment.jersey().register(new DefaultApiResource());
-        environment.jersey().register(new TarApiResource(useCases));
         environment.jersey().register(new OcflObjectApiResource(useCases));
         environment.jersey().register(new ArchiveDetailResource(useCases));
         environment.jersey().register(new ErrorEntityWriter<ErrorMessage, View>(MediaType.TEXT_HTML_TYPE, View.class) {
@@ -75,17 +72,14 @@ public class DdVaultCatalogApplication extends Application<DdVaultCatalogConfigu
 
     private UseCases buildUseCases(DdVaultCatalogConfiguration configuration) {
         var ocflObjectVersionDao = new OcflObjectVersionDao(hibernateBundle.getSessionFactory());
-        var tarDao = new TarDao(hibernateBundle.getSessionFactory());
 
         return new UnitOfWorkAwareProxyFactory(hibernateBundle)
             .create(UseCases.class,
                 new Class[] {
-                    OcflObjectVersionDao.class,
-                    TarDao.class
+                    OcflObjectVersionDao.class
                 },
                 new Object[] {
-                    ocflObjectVersionDao,
-                    tarDao
+                    ocflObjectVersionDao
                 }
             );
     }
