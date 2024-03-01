@@ -41,13 +41,11 @@ import java.util.stream.Collectors;
 public class UseCases {
     private final OcflObjectVersionDao ocflObjectVersionDao;
     private final TarDao tarDao;
-    private final SearchIndex searchIndex;
     private final Conversions conversions = Mappers.getMapper(Conversions.class);
 
     public UseCases(OcflObjectVersionDao ocflObjectVersionDao, TarDao tarDao, SearchIndex searchIndex) {
         this.ocflObjectVersionDao = ocflObjectVersionDao;
         this.tarDao = tarDao;
-        this.searchIndex = searchIndex;
     }
 
 
@@ -92,9 +90,6 @@ public class UseCases {
         log.info("Creating new OCFL object version with bagId {} and version {}: {}", id.getBagId(), id.getObjectVersion(), ocflObjectVersion);
         ocflObjectVersionDao.save(ocflObjectVersion);
 
-        log.info("Indexing OCFL object version in search index: {}", ocflObjectVersion.getId());
-        searchIndex.indexOcflObjectVersion(ocflObjectVersion);
-
         return conversions.convert(ocflObjectVersion);
     }
 
@@ -129,9 +124,6 @@ public class UseCases {
 
         log.info("Saving new TAR {}", tar);
         var result = tarDao.save(tar);
-
-        log.info("Indexing TAR in search index: {}", tar);
-        searchIndex.indexTar(result);
 
         return conversions.convert(result);
     }
@@ -170,22 +162,6 @@ public class UseCases {
         log.info("Updating TAR {}", tar);
         var result = tarDao.save(tar);
 
-        log.info("Reindexing TAR in search index: {}", tar);
-        searchIndex.indexTar(result);
-
         return conversions.convert(result);
     }
-
-    @UnitOfWork
-    public void reindexAllTars() {
-        var tars = tarDao.findAll();
-
-        log.info("Reindexing {} archives", tars.size());
-
-        for (var tar : tars) {
-            log.info("Reindexing TAR {}", tar.getTarUuid());
-            searchIndex.indexTar(tar);
-        }
-    }
-
 }

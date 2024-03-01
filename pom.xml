@@ -22,7 +22,7 @@
     <parent>
         <groupId>nl.knaw.dans</groupId>
         <artifactId>dd-parent</artifactId>
-        <version>0.26.0</version>
+        <version>1.2.0</version>
     </parent>
 
     <artifactId>dd-vault-catalog</artifactId>
@@ -98,7 +98,7 @@
         <dependency>
             <groupId>org.apache.jena</groupId>
             <artifactId>apache-jena-libs</artifactId>
-            <version>4.9.0</version>
+            <version>4.10.0</version>
             <type>pom</type>
         </dependency>
 
@@ -153,8 +153,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration combine.children="override">
-                    <source>11</source>
-                    <target>11</target>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.mapstruct</groupId>

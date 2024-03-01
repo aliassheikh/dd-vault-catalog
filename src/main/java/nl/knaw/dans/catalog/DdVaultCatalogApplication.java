@@ -26,11 +26,9 @@ import io.dropwizard.jersey.errors.ErrorEntityWriter;
 import io.dropwizard.jersey.errors.ErrorMessage;
 import io.dropwizard.views.common.View;
 import io.dropwizard.views.common.ViewBundle;
-import nl.knaw.dans.catalog.cli.ReindexCommand;
 import nl.knaw.dans.catalog.core.SearchIndex;
 import nl.knaw.dans.catalog.core.UseCases;
 import nl.knaw.dans.catalog.core.solr.OcflObjectMetadataReader;
-import nl.knaw.dans.catalog.core.solr.SolrIndex;
 import nl.knaw.dans.catalog.db.OcflObjectVersionDao;
 import nl.knaw.dans.catalog.db.TarDao;
 import nl.knaw.dans.catalog.resources.ArchiveDetailResource;
@@ -50,7 +48,7 @@ public class DdVaultCatalogApplication extends Application<DdVaultCatalogConfigu
 
     @Override
     public String getName() {
-        return "Dd Vault Catalog";
+        return "DD Vault Catalog";
     }
 
     @Override
@@ -58,8 +56,6 @@ public class DdVaultCatalogApplication extends Application<DdVaultCatalogConfigu
         bootstrap.addBundle(hibernateBundle);
         bootstrap.addBundle(new ViewBundle<>());
         bootstrap.getObjectMapper().disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
-        bootstrap.addCommand(new ReindexCommand(hibernateBundle));
     }
 
     @Override
@@ -81,7 +77,6 @@ public class DdVaultCatalogApplication extends Application<DdVaultCatalogConfigu
 
     private UseCases buildUseCases(DdVaultCatalogConfiguration configuration) {
         var ocflObjectMetadataReader = new OcflObjectMetadataReader();
-        var searchIndex = new SolrIndex(configuration.getSolr(), ocflObjectMetadataReader);
         var ocflObjectVersionDao = new OcflObjectVersionDao(hibernateBundle.getSessionFactory());
         var tarDao = new TarDao(hibernateBundle.getSessionFactory());
 
@@ -95,7 +90,7 @@ public class DdVaultCatalogApplication extends Application<DdVaultCatalogConfigu
                 new Object[] {
                     ocflObjectVersionDao,
                     tarDao,
-                    searchIndex
+                    null
                 }
             );
     }
