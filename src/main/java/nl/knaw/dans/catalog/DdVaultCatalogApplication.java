@@ -26,12 +26,11 @@ import io.dropwizard.jersey.errors.ErrorEntityWriter;
 import io.dropwizard.jersey.errors.ErrorMessage;
 import io.dropwizard.views.common.View;
 import io.dropwizard.views.common.ViewBundle;
-import nl.knaw.dans.catalog.core.UseCases;
-import nl.knaw.dans.catalog.db.OcflObjectVersionDao;
-import nl.knaw.dans.catalog.resources.ArchiveDetailResource;
+import nl.knaw.dans.catalog.db.DatasetDao;
+import nl.knaw.dans.catalog.resources.DatasetApiResource;
+import nl.knaw.dans.catalog.resources.DatasetView;
 import nl.knaw.dans.catalog.resources.DefaultApiResource;
 import nl.knaw.dans.catalog.resources.ErrorView;
-import nl.knaw.dans.catalog.resources.OcflObjectApiResource;
 
 import javax.ws.rs.core.MediaType;
 
@@ -56,11 +55,9 @@ public class DdVaultCatalogApplication extends Application<DdVaultCatalogConfigu
 
     @Override
     public void run(final DdVaultCatalogConfiguration configuration, final Environment environment) {
-        var useCases = buildUseCases(configuration);
-
+        var datasetDao = new DatasetDao(hibernateBundle.getSessionFactory());
         environment.jersey().register(new DefaultApiResource());
-        environment.jersey().register(new OcflObjectApiResource(useCases));
-        environment.jersey().register(new ArchiveDetailResource(useCases));
+        environment.jersey().register(new DatasetApiResource(datasetDao));
         environment.jersey().register(new ErrorEntityWriter<ErrorMessage, View>(MediaType.TEXT_HTML_TYPE, View.class) {
 
             @Override
@@ -69,18 +66,5 @@ public class DdVaultCatalogApplication extends Application<DdVaultCatalogConfigu
             }
         });
     }
-
-    private UseCases buildUseCases(DdVaultCatalogConfiguration configuration) {
-        var ocflObjectVersionDao = new OcflObjectVersionDao(hibernateBundle.getSessionFactory());
-
-        return new UnitOfWorkAwareProxyFactory(hibernateBundle)
-            .create(UseCases.class,
-                new Class[] {
-                    OcflObjectVersionDao.class
-                },
-                new Object[] {
-                    ocflObjectVersionDao
-                }
-            );
-    }
 }
+

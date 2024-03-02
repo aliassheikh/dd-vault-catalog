@@ -13,28 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package nl.knaw.dans.catalog.resources;
 
 import io.dropwizard.views.common.View;
-import nl.knaw.dans.catalog.api.OcflObjectVersionDto;
+import lombok.Getter;
+import nl.knaw.dans.catalog.core.Dataset;
 
-import java.util.List;
+@Getter
+public class DatasetView extends View {
 
-public class ArchiveDetailView extends View {
-    private final List<OcflObjectVersionDto> ocflObjectVersions;
+    private final Dataset dataset;
 
-    public ArchiveDetailView(List<OcflObjectVersionDto> ocflObjectVersions) {
-        super("ocfl-object-version.ftl");
-        this.ocflObjectVersions = ocflObjectVersions;
-    }
-
-    public OcflObjectVersionDto getOcflObjectVersion() {
-        return ocflObjectVersions.get(0);
-    }
-
-    public List<OcflObjectVersionDto> getOtherOcflObjectVersions() {
-        return ocflObjectVersions;
+    protected DatasetView(Dataset dataset) {
+        super("dataset.html");
+        this.dataset = dataset;
     }
 
 }

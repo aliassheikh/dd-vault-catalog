@@ -13,10 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.knaw.dans.catalog.core.exception;
+package nl.knaw.dans.catalog.core;
 
-public class TarNotFoundException extends Exception {
-    public TarNotFoundException(String msg) {
-        super(msg);
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+import java.util.UUID;
+
+public class UuidValidator implements ConstraintValidator<ValidUuid, String> {
+    @Override
+    public void initialize(ValidUuid constraintAnnotation) {
+    }
+
+    @Override
+    public boolean isValid(String value, ConstraintValidatorContext context) {
+        try {
+            UUID.fromString(value);
+            return true;
+        }
+        catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 }

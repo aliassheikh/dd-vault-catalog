@@ -13,19 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package nl.knaw.dans.catalog.resources;
 
-import io.dropwizard.jersey.errors.ErrorMessage;
-import io.dropwizard.views.common.View;
-import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import nl.knaw.dans.catalog.Conversions;
+import nl.knaw.dans.catalog.db.DatasetVersionExportDao;
+import org.mapstruct.factory.Mappers;
 
-@Getter
-public class ErrorView extends View {
-    private final ErrorMessage errorMessage;
+import javax.ws.rs.core.Response;
 
-    public ErrorView(ErrorMessage errorMessage) {
-        super("error.html");
-        this.errorMessage = errorMessage;
+@RequiredArgsConstructor
+public class DatasetVersionExportApiResource implements DatasetVersionExportApi {
+    private static final Conversions conversions = Mappers.getMapper(Conversions.class);
+
+    @NonNull
+    private final DatasetVersionExportDao dao;
+
+    @Override
+    public Response getDatasetVersionExportByBagId(String bagId) {
+        return Response.ok(conversions.convert(dao.findByBagId(bagId))).build();
     }
 }
