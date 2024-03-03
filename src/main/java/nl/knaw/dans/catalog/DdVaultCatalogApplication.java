@@ -31,6 +31,7 @@ import nl.knaw.dans.catalog.db.DatasetDao;
 import nl.knaw.dans.catalog.resources.DatasetApiResource;
 import nl.knaw.dans.catalog.resources.DefaultApiResource;
 import nl.knaw.dans.catalog.resources.ErrorView;
+import io.dropwizard.assets.AssetsBundle;
 
 import javax.ws.rs.core.MediaType;
 
@@ -50,6 +51,7 @@ public class DdVaultCatalogApplication extends Application<DdVaultCatalogConfig>
     public void initialize(final Bootstrap<DdVaultCatalogConfig> bootstrap) {
         bootstrap.addBundle(hibernateBundle);
         bootstrap.addBundle(new ViewBundle<>());
+        bootstrap.addBundle(new AssetsBundle());
         bootstrap.getObjectMapper().disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
 

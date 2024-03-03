@@ -25,7 +25,7 @@ public class ErrorView extends View {
     private final ErrorMessage errorMessage;
 
     public ErrorView(ErrorMessage errorMessage) {
-        super("error.html");
+        super("error.ftl");
         this.errorMessage = errorMessage;
     }
 }

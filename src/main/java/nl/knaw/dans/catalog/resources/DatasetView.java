@@ -25,7 +25,7 @@ public class DatasetView extends View {
     private final Dataset dataset;
 
     protected DatasetView(Dataset dataset) {
-        super("dataset.html");
+        super("dataset.ftl");
         this.dataset = dataset;
     }
 

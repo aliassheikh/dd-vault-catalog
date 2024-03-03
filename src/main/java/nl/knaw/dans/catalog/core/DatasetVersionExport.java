@@ -15,6 +15,7 @@
  */
 package nl.knaw.dans.catalog.core;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -55,6 +56,7 @@ public class DatasetVersionExport {
     @ManyToOne
     @JoinColumn(name = "dataset_id")
     @NotNull
+    @JsonIgnore
     private Dataset dataset;
 
     @Column(name = "bag_id", columnDefinition = "uuid", nullable = false)

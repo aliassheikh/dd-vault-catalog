@@ -68,6 +68,8 @@ public interface Conversions {
     @Mapping(target = "datasetVersionExports", source = "datasetDto.versionExports", qualifiedByName = "mapVersionExportDtoListToDatasetVersionExportList")
     Dataset convert(DatasetDto datasetDto);
 
+    DatasetDto convert(Dataset dataset);
+
     default UUID stringToUuid(String value) {
         if (value == null) {
             return null;
