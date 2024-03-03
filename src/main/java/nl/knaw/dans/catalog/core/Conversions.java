@@ -60,7 +60,7 @@ public interface Conversions {
 
     @AfterMapping
     default void setDataset(Object source, @MappingTarget Dataset dataset) {
-        for (DatasetVersionExport datasetVersionExport : dataset.datasetVersionExports) {
+        for (DatasetVersionExport datasetVersionExport : dataset.getDatasetVersionExports()) {
             datasetVersionExport.setDataset(dataset);
         }
     }

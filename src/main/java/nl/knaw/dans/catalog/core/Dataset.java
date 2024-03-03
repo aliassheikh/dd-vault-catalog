@@ -73,19 +73,8 @@ public class Dataset {
 
     @OneToMany(mappedBy = "dataset", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
-    // Setters are package-accessible for Conversions.setDataset
-    @Setter(AccessLevel.PACKAGE)
-    // Field is package-accessible for Conversions.setDataset
-    List<DatasetVersionExport> datasetVersionExports = new ArrayList<>();
+    private List<DatasetVersionExport> datasetVersionExports = new ArrayList<>();
 
-    /**
-     * Returns an unmodifiable list of dataset version exports. To add a dataset version export, use {@link #addDatasetVersionExport(DatasetVersionExport)}.
-     *
-     * @return an unmodifiable list of dataset version exports
-     */
-    public List<DatasetVersionExport> getDatasetVersionExports() {
-        return Collections.unmodifiableList(datasetVersionExports);
-    }
 
     public void addDatasetVersionExport(DatasetVersionExport dve) {
         dve.setDataset(this);
