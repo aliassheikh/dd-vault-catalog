@@ -17,7 +17,6 @@ package nl.knaw.dans.catalog.core;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,7 +25,6 @@ import lombok.ToString;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -34,6 +32,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -46,7 +45,8 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Dataset {
 
     @Id
@@ -73,6 +73,22 @@ public class Dataset {
 
     @OneToMany(mappedBy = "dataset", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
-    @Builder.Default
-    private List<DatasetVersionExport> datasetVersionExports = new ArrayList<>();
+    // Setters are package-accessible for Conversions.setDataset
+    @Setter(AccessLevel.PACKAGE)
+    // Field is package-accessible for Conversions.setDataset
+    List<DatasetVersionExport> datasetVersionExports = new ArrayList<>();
+
+    /**
+     * Returns an unmodifiable list of dataset version exports. To add a dataset version export, use {@link #addDatasetVersionExport(DatasetVersionExport)}.
+     *
+     * @return an unmodifiable list of dataset version exports
+     */
+    public List<DatasetVersionExport> getDatasetVersionExports() {
+        return Collections.unmodifiableList(datasetVersionExports);
+    }
+
+    public void addDatasetVersionExport(DatasetVersionExport dve) {
+        dve.setDataset(this);
+        datasetVersionExports.add(dve);
+    }
 }

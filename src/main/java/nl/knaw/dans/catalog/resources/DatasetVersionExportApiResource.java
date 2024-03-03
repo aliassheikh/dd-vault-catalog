@@ -15,9 +15,11 @@
  */
 package nl.knaw.dans.catalog.resources;
 
+import io.dropwizard.hibernate.UnitOfWork;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import nl.knaw.dans.catalog.Conversions;
+import nl.knaw.dans.catalog.core.Conversions;
+import nl.knaw.dans.catalog.core.UrnUuid;
 import nl.knaw.dans.catalog.db.DatasetVersionExportDao;
 import org.mapstruct.factory.Mappers;
 
@@ -31,7 +33,8 @@ public class DatasetVersionExportApiResource implements DatasetVersionExportApi 
     private final DatasetVersionExportDao dao;
 
     @Override
+    @UnitOfWork
     public Response getDatasetVersionExportByBagId(String bagId) {
-        return Response.ok(conversions.convert(dao.findByBagId(bagId))).build();
+        return Response.ok(conversions.convert(dao.findByBagId(UrnUuid.fromString(bagId).getUuid()))).build();
     }
 }

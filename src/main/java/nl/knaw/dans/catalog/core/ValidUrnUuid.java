@@ -15,24 +15,18 @@
  */
 package nl.knaw.dans.catalog.core;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
-import java.util.UUID;
+import javax.validation.Constraint;
+import javax.validation.Payload;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-// TODO: move to dans-java-utils
-public class UuidValidator implements ConstraintValidator<ValidUuid, String> {
-    @Override
-    public void initialize(ValidUuid constraintAnnotation) {
-    }
-
-    @Override
-    public boolean isValid(String value, ConstraintValidatorContext context) {
-        try {
-            UUID.fromString(value);
-            return true;
-        }
-        catch (IllegalArgumentException e) {
-            return false;
-        }
-    }
+@Constraint(validatedBy = UrnUuidValidator.class)
+@Target({ ElementType.FIELD, ElementType.PARAMETER})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ValidUrnUuid {
+    String message() default "Invalid urn:uuid";
+    Class<?>[] groups() default {};
+    Class<? extends Payload>[] payload() default {};
 }

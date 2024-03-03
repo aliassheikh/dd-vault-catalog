@@ -1,0 +1,20 @@
+nbn: "urn:nbn:nl:ui:13-1234-5671"
+datastation: "datastation"
+dataversePid: "doi:10.17026/dans-zz4-3y3y"
+swordToken: "urn:uuid:123e4567-e89b-12d3-a456-426614174000"
+dataSupplier: "dataSupplier"
+versionExports:
+  - datasetNbn: "urn:nbn:nl:ui:13-1234-5671"
+    bagId: "urn:uuid:123e4567-e89b-12d3-a456-426614174000"
+    ocflObjectVersionNumber: 1
+    createdTimestamp: "2021-01-01T00:00:00.000Z"
+    archivedTimestamp:
+    dataversePidVersion:
+    otherId:
+    otherIdVersion:
+    metadata:
+    filepidToLocalPath:
+    deaccessioned:
+    exporter:
+    exporterVersion:
+    skeletonRecord:

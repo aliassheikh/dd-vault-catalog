@@ -32,6 +32,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.NotNull;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
@@ -44,9 +45,8 @@ import java.util.UUID;
 @Getter
 @Setter
 @ToString
-@Builder
-@AllArgsConstructor(access = AccessLevel.PACKAGE)
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
+@AllArgsConstructor
+@NoArgsConstructor
 public class DatasetVersionExport {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,9 +54,10 @@ public class DatasetVersionExport {
 
     @ManyToOne
     @JoinColumn(name = "dataset_id")
+    @NotNull
     private Dataset dataset;
 
-    @Column(name = "bag_id", nullable = false)
+    @Column(name = "bag_id", columnDefinition = "uuid", nullable = false)
     private UUID bagId;
 
     @Column(name = "ocfl_object_version_number")

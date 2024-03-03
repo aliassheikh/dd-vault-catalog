@@ -40,7 +40,11 @@ public class DatasetDao extends AbstractDAO<Dataset> {
     }
 
     public void add(Dataset dataset) {
-        currentSession().save(dataset);
+        try {
+            currentSession().save(dataset);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public Dataset save(Dataset dataset) {

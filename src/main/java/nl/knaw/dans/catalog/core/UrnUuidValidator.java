@@ -17,18 +17,14 @@ package nl.knaw.dans.catalog.core;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.net.URI;
 import java.util.UUID;
 
-// TODO: move to dans-java-utils
-public class UuidValidator implements ConstraintValidator<ValidUuid, String> {
+public class UrnUuidValidator implements ConstraintValidator<ValidUrnUuid, String> {
     @Override
-    public void initialize(ValidUuid constraintAnnotation) {
-    }
-
-    @Override
-    public boolean isValid(String value, ConstraintValidatorContext context) {
+    public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
         try {
-            UUID.fromString(value);
+            UrnUuid.fromString(s);
             return true;
         }
         catch (IllegalArgumentException e) {

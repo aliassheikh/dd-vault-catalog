@@ -15,24 +15,21 @@
  */
 package nl.knaw.dans.catalog.core;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
-import java.util.UUID;
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.container.ContainerResponseContext;
+import javax.ws.rs.container.ContainerResponseFilter;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.ext.Provider;
+import java.io.IOException;
 
 // TODO: move to dans-java-utils
-public class UuidValidator implements ConstraintValidator<ValidUuid, String> {
-    @Override
-    public void initialize(ValidUuid constraintAnnotation) {
-    }
+@Provider
+public class DefaultMediaTypeFilter implements ContainerResponseFilter {
 
     @Override
-    public boolean isValid(String value, ConstraintValidatorContext context) {
-        try {
-            UUID.fromString(value);
-            return true;
-        }
-        catch (IllegalArgumentException e) {
-            return false;
+    public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {
+        if (requestContext.getAcceptableMediaTypes().contains(MediaType.WILDCARD_TYPE)) {
+            responseContext.getHeaders().putSingle("Content-Type", MediaType.APPLICATION_JSON);
         }
     }
 }

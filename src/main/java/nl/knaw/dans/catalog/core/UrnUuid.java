@@ -15,24 +15,31 @@
  */
 package nl.knaw.dans.catalog.core;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+
+import java.net.URI;
 import java.util.UUID;
 
-// TODO: move to dans-java-utils
-public class UuidValidator implements ConstraintValidator<ValidUuid, String> {
-    @Override
-    public void initialize(ValidUuid constraintAnnotation) {
+@AllArgsConstructor
+@EqualsAndHashCode
+public class UrnUuid {
+    private URI urn;
+
+    public UUID getUuid() {
+        return UUID.fromString(urn.getSchemeSpecificPart().substring("uuid:".length()));
+    }
+
+    public static UrnUuid fromString(String s) {
+        return new UrnUuid(URI.create(s));
     }
 
     @Override
-    public boolean isValid(String value, ConstraintValidatorContext context) {
-        try {
-            UUID.fromString(value);
-            return true;
-        }
-        catch (IllegalArgumentException e) {
-            return false;
-        }
+    public String toString() {
+        return urn.toString();
+    }
+
+    public String toASCIIString() {
+        return urn.toASCIIString();
     }
 }

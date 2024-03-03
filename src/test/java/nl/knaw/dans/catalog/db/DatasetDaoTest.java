@@ -37,15 +37,15 @@ public class DatasetDaoTest {
     @Test
     public void testFindById() {
         db.inTransaction(() -> {
-            Dataset dataset = Dataset.builder()
-                .nbn("123")
-                .title("title")
-                .dataversePid("dataversePid")
-                .swordToken("swordToken")
-                .dataSupplier("dataSupplier")
-                .datastation("datastation")
-                .build();
+            Dataset dataset = new Dataset();
+            dataset.setNbn("123");
+            dataset.setTitle("title");
+            dataset.setDataversePid("dataversePid");
+            dataset.setSwordToken("swordToken");
+            dataset.setDataSupplier("dataSupplier");
+            dataset.setDatastation("datastation");
             dao.add(dataset);
+
         });
 
         db.inTransaction(() -> {
@@ -62,14 +62,13 @@ public class DatasetDaoTest {
     @Test
     public void testSave() {
         db.inTransaction(() -> {
-            Dataset dataset = Dataset.builder()
-                .nbn("123")
-                .title("title")
-                .dataversePid("dataversePid")
-                .swordToken("swordToken")
-                .dataSupplier("dataSupplier")
-                .datastation("datastation")
-                .build();
+            Dataset dataset = new Dataset();
+            dataset.setNbn("123");
+            dataset.setTitle("title");
+            dataset.setDataversePid("dataversePid");
+            dataset.setSwordToken("swordToken");
+            dataset.setDataSupplier("dataSupplier");
+            dataset.setDatastation("datastation");
             dao.save(dataset);
             assertThat(dataset.getId()).isNotNull();
         });
@@ -78,14 +77,13 @@ public class DatasetDaoTest {
     @Test
     public void testUpdate() {
         db.inTransaction(() -> {
-            Dataset dataset = Dataset.builder()
-                .nbn("123")
-                .title("title")
-                .dataversePid("dataversePid")
-                .swordToken("swordToken")
-                .dataSupplier("dataSupplier")
-                .datastation("datastation")
-                .build();
+            Dataset dataset = new Dataset();
+            dataset.setNbn("123");
+            dataset.setTitle("title");
+            dataset.setDataversePid("dataversePid");
+            dataset.setSwordToken("swordToken");
+            dataset.setDataSupplier("dataSupplier");
+            dataset.setDatastation("datastation");
             dao.save(dataset);
             assertThat(dataset.getId()).isNotNull();
             dataset.setTitle("new title");
@@ -102,24 +100,21 @@ public class DatasetDaoTest {
     @Test
     public void testSaveWithDatasetVersionExports() {
         db.inTransaction(() -> {
-            Dataset dataset = Dataset.builder()
-                .nbn("123")
-                .title("title")
-                .dataversePid("dataversePid")
-                .swordToken("swordToken")
-                .dataSupplier("dataSupplier")
-                .datastation("datastation")
-                .build();
+            Dataset dataset = new Dataset();
+            dataset.setNbn("123");
+            dataset.setTitle("title");
+            dataset.setDataversePid("dataversePid");
+            dataset.setSwordToken("swordToken");
+            dataset.setDataSupplier("dataSupplier");
+            dataset.setDatastation("datastation");
             var uuid = UUID.randomUUID();
-            DatasetVersionExport datasetVersionExport = DatasetVersionExport.builder()
-                .bagId(uuid)
-                .ocflObjectVersionNumber(1)
-                .createdTimestamp(null)
-                .archiveTimestamp(null)
-                .dataversePidVersion("dataversePidVersion")
-                .otherId("otherId")
-                .build();
-            dataset.getDatasetVersionExports().add(datasetVersionExport);
+
+            DatasetVersionExport datasetVersionExport = new DatasetVersionExport();
+            datasetVersionExport.setBagId(uuid);
+            datasetVersionExport.setOcflObjectVersionNumber(1);
+            datasetVersionExport.setDataversePidVersion("dataversePidVersion");
+            datasetVersionExport.setOtherId("otherId");
+            dataset.addDatasetVersionExport(datasetVersionExport);
             dao.save(dataset);
             assertThat(dataset.getId()).isNotNull();
             assertThat(dataset.getDatasetVersionExports().get(0).getId()).isNotNull();

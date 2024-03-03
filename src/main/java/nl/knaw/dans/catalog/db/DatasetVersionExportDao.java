@@ -23,13 +23,15 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.UUID;
+import java.util.stream.Stream;
 
 public class DatasetVersionExportDao extends AbstractDAO<DatasetVersionExport> {
     public DatasetVersionExportDao(SessionFactory sessionFactory) {
         super(sessionFactory);
     }
 
-    public DatasetVersionExport findByBagId(String bagId) {
+    public DatasetVersionExport findByBagId(UUID bagId) {
         CriteriaBuilder cb = currentSession().getCriteriaBuilder();
         CriteriaQuery<DatasetVersionExport> cq = cb.createQuery(DatasetVersionExport.class);
         Root<DatasetVersionExport> root = cq.from(DatasetVersionExport.class);
@@ -38,5 +40,17 @@ public class DatasetVersionExportDao extends AbstractDAO<DatasetVersionExport> {
         cq.where(bagIdPredicate);
 
         return uniqueResult(currentSession().createQuery(cq));
+    }
+
+    public void add(DatasetVersionExport datasetVersionExport) {
+        currentSession().save(datasetVersionExport);
+    }
+
+    public Stream<DatasetVersionExport> streamAll() {
+        CriteriaBuilder cb = currentSession().getCriteriaBuilder();
+        CriteriaQuery<DatasetVersionExport> cq = cb.createQuery(DatasetVersionExport.class);
+        Root<DatasetVersionExport> root = cq.from(DatasetVersionExport.class);
+        cq.select(root);
+        return currentSession().createQuery(cq).stream();
     }
 }

@@ -15,10 +15,11 @@
  */
 package nl.knaw.dans.catalog.resources;
 
+import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.views.common.View;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import nl.knaw.dans.catalog.Conversions;
+import nl.knaw.dans.catalog.core.Conversions;
 import nl.knaw.dans.catalog.api.DatasetDto;
 import nl.knaw.dans.catalog.api.VersionExportDto;
 import nl.knaw.dans.catalog.core.Dataset;
@@ -42,6 +43,7 @@ public class DatasetApiResource implements DatasetApi {
     private HttpHeaders headers;
 
     @Override
+    @UnitOfWork
     public Response addDataset(String nbn, DatasetDto datasetDto) {
         if (!nbn.equals(datasetDto.getNbn())) {
             return Response.status(Response.Status.BAD_REQUEST).entity("NBN in path and body do not match").build();
@@ -55,6 +57,7 @@ public class DatasetApiResource implements DatasetApi {
     }
 
     @Override
+    @UnitOfWork
     public Response addVersionExport(String nbn, String bagId, VersionExportDto versionExportDto) {
         if (!bagId.equals(versionExportDto.getBagId())) {
             return Response.status(Response.Status.BAD_REQUEST).entity("BagId in path and body do not match").build();
@@ -71,6 +74,7 @@ public class DatasetApiResource implements DatasetApi {
     }
 
     @Override
+    @UnitOfWork
     public Response getDataset(String nbn) {
         Optional<Dataset> datasetOptional = datasetDao.findByNbn(nbn);
         if (datasetOptional.isEmpty()) {
@@ -87,11 +91,13 @@ public class DatasetApiResource implements DatasetApi {
     }
 
     @Override
+    @UnitOfWork
     public Response getDatasetBySwordToken(String swordToken) {
         return null;
     }
 
     @Override
+    @UnitOfWork
     public Response getVersionExport(String nbn, String bagId) {
         return null;
     }

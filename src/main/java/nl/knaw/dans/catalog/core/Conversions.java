@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.knaw.dans.catalog;
+package nl.knaw.dans.catalog.core;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -22,9 +22,16 @@ import nl.knaw.dans.catalog.api.DatasetDto;
 import nl.knaw.dans.catalog.api.VersionExportDto;
 import nl.knaw.dans.catalog.core.Dataset;
 import nl.knaw.dans.catalog.core.DatasetVersionExport;
+import nl.knaw.dans.catalog.core.UrnUuid;
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.Named;
 
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -41,22 +48,40 @@ public interface Conversions {
 
     DatasetVersionExport convert(VersionExportDto versionExportDto);
 
+    @Named("mapVersionExportDtoListToDatasetVersionExportList")
+    default List<DatasetVersionExport> mapVersionExportDtoListToDatasetVersionExportList(List<VersionExportDto> versionExportDtoList) {
+        List<DatasetVersionExport> datasetVersionExports = new ArrayList<>();
+        for (VersionExportDto versionExportDto : versionExportDtoList) {
+            DatasetVersionExport datasetVersionExport = convert(versionExportDto);
+            datasetVersionExports.add(datasetVersionExport);
+        }
+        return datasetVersionExports;
+    }
+
+    @AfterMapping
+    default void setDataset(Object source, @MappingTarget Dataset dataset) {
+        for (DatasetVersionExport datasetVersionExport : dataset.datasetVersionExports) {
+            datasetVersionExport.setDataset(dataset);
+        }
+    }
+
+    @Mapping(target = "datasetVersionExports", source = "datasetDto.versionExports", qualifiedByName = "mapVersionExportDtoListToDatasetVersionExportList")
     Dataset convert(DatasetDto datasetDto);
 
     default UUID stringToUuid(String value) {
         if (value == null) {
             return null;
         }
-        return UUID.fromString(value);
+        return UrnUuid.fromString(value).getUuid();
     }
 
     default String uuidToString(UUID value) {
         if (value == null) {
             return null;
         }
-        return value.toString();
+        var uri = URI.create("urn:uuid:" + value);
+        return uri.toString();
     }
-
 
     default String objectToString(Object value) {
         if (value == null) {
