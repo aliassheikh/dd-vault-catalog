@@ -8,9 +8,6 @@ server:
     - type: http
       port: 20306
 
-solr:
-  url: http://localhost:8983/solr/dd_vault_catalog
-
 database:
   driverClass: org.postgresql.Driver
   url: jdbc:postgresql://localhost:5432/dd_vault_catalog

@@ -43,12 +43,13 @@ public class DatasetDao extends AbstractDAO<Dataset> {
         currentSession().save(dataset);
     }
 
-    public void save(Dataset dataset) {
+    public Dataset save(Dataset dataset) {
         if (dataset.getId() == null || get(dataset.getId()) == null) {
             persist(dataset);
         }
         else {
             currentSession().update(dataset);
         }
+        return dataset;
     }
 }

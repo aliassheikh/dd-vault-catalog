@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package nl.knaw.dans.catalog;
+package nl.knaw.dans.catalog.config;
 
 import io.dropwizard.core.Configuration;
 import io.dropwizard.db.DataSourceFactory;
@@ -26,17 +26,8 @@ import javax.validation.constraints.NotNull;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class DdVaultCatalogConfiguration extends Configuration {
+public class DdVaultCatalogConfig extends Configuration {
     @Valid
     @NotNull
     private DataSourceFactory database = new DataSourceFactory();
-
-    @Valid
-    private SolrConfig solr;
-
-    @Data
-    public static class SolrConfig {
-        private String url;
-        private String schema;
-    }
 }

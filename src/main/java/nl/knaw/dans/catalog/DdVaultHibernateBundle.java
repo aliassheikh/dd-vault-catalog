@@ -18,16 +18,17 @@ package nl.knaw.dans.catalog;
 
 import io.dropwizard.db.PooledDataSourceFactory;
 import io.dropwizard.hibernate.HibernateBundle;
+import nl.knaw.dans.catalog.config.DdVaultCatalogConfig;
 import nl.knaw.dans.catalog.core.Dataset;
 import nl.knaw.dans.catalog.core.DatasetVersionExport;
 
-public class DdVaultHibernateBundle extends HibernateBundle<DdVaultCatalogConfiguration> {
+public class DdVaultHibernateBundle extends HibernateBundle<DdVaultCatalogConfig> {
     public DdVaultHibernateBundle() {
         super(Dataset.class, DatasetVersionExport.class);
     }
 
     @Override
-    public PooledDataSourceFactory getDataSourceFactory(DdVaultCatalogConfiguration ddVaultCatalogConfiguration) {
-        return ddVaultCatalogConfiguration.getDatabase();
+    public PooledDataSourceFactory getDataSourceFactory(DdVaultCatalogConfig ddVaultCatalogConfig) {
+        return ddVaultCatalogConfig.getDatabase();
     }
 }

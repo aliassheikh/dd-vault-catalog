@@ -32,6 +32,3 @@ logging:
     - type: file
       archive: false
       currentLogFilename: data/dd-vault-catalog.log
-
-solr:
-  url: http://localhost:8983/

@@ -26,12 +26,14 @@ import lombok.ToString;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -51,7 +53,7 @@ public class Dataset {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "nbn")
+    @Column(name = "nbn", nullable = false)
     private String nbn;
 
     @Column(name = "title")
@@ -66,9 +68,11 @@ public class Dataset {
     @Column(name = "data_supplier")
     private String dataSupplier;
 
-    @Column(name = "datastation")
+    @Column(name = "datastation", nullable = false)
     private String datastation;
 
     @OneToMany(mappedBy = "dataset", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<DatasetVersionExport> datasetVersionExports;
+    @ToString.Exclude
+    @Builder.Default
+    private List<DatasetVersionExport> datasetVersionExports = new ArrayList<>();
 }

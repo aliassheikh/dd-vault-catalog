@@ -21,21 +21,20 @@ import io.dropwizard.core.Application;
 import io.dropwizard.core.setup.Bootstrap;
 import io.dropwizard.core.setup.Environment;
 import io.dropwizard.hibernate.HibernateBundle;
-import io.dropwizard.hibernate.UnitOfWorkAwareProxyFactory;
 import io.dropwizard.jersey.errors.ErrorEntityWriter;
 import io.dropwizard.jersey.errors.ErrorMessage;
 import io.dropwizard.views.common.View;
 import io.dropwizard.views.common.ViewBundle;
+import nl.knaw.dans.catalog.config.DdVaultCatalogConfig;
 import nl.knaw.dans.catalog.db.DatasetDao;
 import nl.knaw.dans.catalog.resources.DatasetApiResource;
-import nl.knaw.dans.catalog.resources.DatasetView;
 import nl.knaw.dans.catalog.resources.DefaultApiResource;
 import nl.knaw.dans.catalog.resources.ErrorView;
 
 import javax.ws.rs.core.MediaType;
 
-public class DdVaultCatalogApplication extends Application<DdVaultCatalogConfiguration> {
-    private final HibernateBundle<DdVaultCatalogConfiguration> hibernateBundle = new DdVaultHibernateBundle();
+public class DdVaultCatalogApplication extends Application<DdVaultCatalogConfig> {
+    private final HibernateBundle<DdVaultCatalogConfig> hibernateBundle = new DdVaultHibernateBundle();
 
     public static void main(final String[] args) throws Exception {
         new DdVaultCatalogApplication().run(args);
@@ -47,14 +46,14 @@ public class DdVaultCatalogApplication extends Application<DdVaultCatalogConfigu
     }
 
     @Override
-    public void initialize(final Bootstrap<DdVaultCatalogConfiguration> bootstrap) {
+    public void initialize(final Bootstrap<DdVaultCatalogConfig> bootstrap) {
         bootstrap.addBundle(hibernateBundle);
         bootstrap.addBundle(new ViewBundle<>());
         bootstrap.getObjectMapper().disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
 
     @Override
-    public void run(final DdVaultCatalogConfiguration configuration, final Environment environment) {
+    public void run(final DdVaultCatalogConfig configuration, final Environment environment) {
         var datasetDao = new DatasetDao(hibernateBundle.getSessionFactory());
         environment.jersey().register(new DefaultApiResource());
         environment.jersey().register(new DatasetApiResource(datasetDao));

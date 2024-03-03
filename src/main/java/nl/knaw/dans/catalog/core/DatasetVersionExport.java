@@ -28,6 +28,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -52,9 +53,10 @@ public class DatasetVersionExport {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "dataset_id")
     private Dataset dataset;
 
-    @Column(name = "bag_id")
+    @Column(name = "bag_id", nullable = false)
     private UUID bagId;
 
     @Column(name = "ocfl_object_version_number")
