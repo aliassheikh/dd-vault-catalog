@@ -20,7 +20,7 @@ import io.dropwizard.views.common.View;
 import lombok.AllArgsConstructor;
 import nl.knaw.dans.catalog.api.DatasetDto;
 import nl.knaw.dans.catalog.api.VersionExportDto;
-import nl.knaw.dans.catalog.core.Conversions;
+import nl.knaw.dans.catalog.Conversions;
 import nl.knaw.dans.catalog.core.Dataset;
 import nl.knaw.dans.catalog.db.DatasetDao;
 import org.apache.http.HeaderElement;

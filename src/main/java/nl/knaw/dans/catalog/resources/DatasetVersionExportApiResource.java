@@ -18,9 +18,9 @@ package nl.knaw.dans.catalog.resources;
 import io.dropwizard.hibernate.UnitOfWork;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import nl.knaw.dans.catalog.core.Conversions;
-import nl.knaw.dans.catalog.core.UrnUuid;
+import nl.knaw.dans.catalog.Conversions;
 import nl.knaw.dans.catalog.db.DatasetVersionExportDao;
+import nl.knaw.dans.lib.util.UrnUuid;
 import org.mapstruct.factory.Mappers;
 
 import javax.ws.rs.core.Response;
