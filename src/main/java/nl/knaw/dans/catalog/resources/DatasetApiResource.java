@@ -18,10 +18,11 @@ package nl.knaw.dans.catalog.resources;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.views.common.View;
 import lombok.AllArgsConstructor;
+import nl.knaw.dans.catalog.Conversions;
 import nl.knaw.dans.catalog.api.DatasetDto;
 import nl.knaw.dans.catalog.api.VersionExportDto;
-import nl.knaw.dans.catalog.Conversions;
 import nl.knaw.dans.catalog.core.Dataset;
+import nl.knaw.dans.catalog.core.DatasetVersionExport;
 import nl.knaw.dans.catalog.db.DatasetDao;
 import org.apache.http.HeaderElement;
 import org.apache.http.message.BasicHeaderValueParser;
@@ -30,6 +31,7 @@ import org.mapstruct.factory.Mappers;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -48,23 +50,29 @@ public class DatasetApiResource implements DatasetApi {
         if (dataset.isPresent()) {
             return Response.status(Response.Status.CONFLICT).entity("Dataset already exists").build();
         }
-        datasetDao.add(conversions.convert(datasetDto));
+        datasetDao.save(conversions.convert(datasetDto));
         return Response.ok().build();
     }
 
     @Override
     @UnitOfWork
-    public Response addVersionExport(String nbn, String bagId, VersionExportDto versionExportDto) {
-        if (!bagId.equals(versionExportDto.getBagId())) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("BagId in path and body do not match").build();
-        }
+    public Response setVersionExport(String nbn, Integer ocflObjectVersion, VersionExportDto versionExportDto) {
         var datasetOptional = datasetDao.findByNbn(nbn);
         if (datasetOptional.isEmpty()) {
             return Response.status(Response.Status.NOT_FOUND).entity("Dataset not found").build();
         }
         var dataset = datasetOptional.get();
-        // TODO: check that createdTimestamp is newer tMediaType.TEXT_HTML_TYPE.isCompatible(MediaType.valueOf(accept))han the latest version export
-        dataset.getDatasetVersionExports().add(conversions.convert(versionExportDto));
+        var latestDveInCatalog = dataset.getDatasetVersionExports().stream()
+            .max(Comparator.comparing(DatasetVersionExport::getOcflObjectVersionNumber)).orElseThrow(() -> new IllegalStateException("No DatasetVersionExports found for dataset with NBN " + nbn));
+        if (ocflObjectVersion.equals(latestDveInCatalog.getOcflObjectVersionNumber())) {
+            conversions.updateVersionExportFromDto(versionExportDto, latestDveInCatalog);
+        }
+        else if (ocflObjectVersion.equals(latestDveInCatalog.getOcflObjectVersionNumber() + 1)) {
+            dataset.getDatasetVersionExports().add(conversions.convert(versionExportDto));
+        }
+        else {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid ocflObjectVersion; it must be equal or one greater than the latest DVE stored").build();
+        }
         datasetDao.save(dataset);
         return Response.ok().build();
     }
@@ -97,7 +105,7 @@ public class DatasetApiResource implements DatasetApi {
 
     @Override
     @UnitOfWork
-    public Response getVersionExport(String nbn, String bagId) {
+    public Response getVersionExport(String nbn, Integer ocflObjectVersionNumber) {
         return null;
     }
 }

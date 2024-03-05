@@ -46,7 +46,7 @@ public class DatasetVersionExportDaoTest {
             parentDataset.setSwordToken("swordToken");
             parentDataset.setDataSupplier("dataSupplier");
             parentDataset.setDatastation("datastation");
-            datasetDao.add(parentDataset);
+            datasetDao.save(parentDataset);
             DatasetVersionExport datasetVersionExport = new DatasetVersionExport();
             datasetVersionExport.setDataset(parentDataset);
             datasetVersionExport.setBagId(uuid);

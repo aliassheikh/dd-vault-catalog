@@ -39,14 +39,6 @@ public class DatasetDao extends AbstractDAO<Dataset> {
         return Optional.ofNullable(dataset);
     }
 
-    public void add(Dataset dataset) {
-        try {
-            currentSession().save(dataset);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public Dataset save(Dataset dataset) {
         if (dataset.getId() == null || get(dataset.getId()) == null) {
             persist(dataset);

@@ -44,7 +44,7 @@ public class DatasetDaoTest {
             dataset.setSwordToken("swordToken");
             dataset.setDataSupplier("dataSupplier");
             dataset.setDatastation("datastation");
-            dao.add(dataset);
+            dao.save(dataset);
 
         });
 

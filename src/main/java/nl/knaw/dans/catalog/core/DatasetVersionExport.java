@@ -30,6 +30,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -80,6 +81,7 @@ public class DatasetVersionExport {
     @Column(name = "other_id_version")
     private String otherIdVersion;
 
+    @Lob
     @Column(name = "metadata")
     private String metadata;
 

@@ -48,6 +48,8 @@ public interface Conversions {
 
     DatasetVersionExport convert(VersionExportDto versionExportDto);
 
+    void updateVersionExportFromDto(VersionExportDto versionExportDto, @MappingTarget DatasetVersionExport datasetVersionExport);
+
     @Named("mapVersionExportDtoListToDatasetVersionExportList")
     default List<DatasetVersionExport> mapVersionExportDtoListToDatasetVersionExportList(List<VersionExportDto> versionExportDtoList) {
         List<DatasetVersionExport> datasetVersionExports = new ArrayList<>();
