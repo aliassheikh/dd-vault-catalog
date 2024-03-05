@@ -63,10 +63,10 @@ public class DatasetVersionExport {
     @Column(name = "bag_id", columnDefinition = "uuid", nullable = false)
     private UUID bagId;
 
-    @Column(name = "ocfl_object_version_number")
+    @Column(name = "ocfl_object_version_number", nullable = false)
     private Integer ocflObjectVersionNumber;
 
-    @Column(name = "created_timestamp")
+    @Column(name = "created_timestamp", nullable = false)
     private OffsetDateTime createdTimestamp;
 
     @Column(name = "archive_timestamp")

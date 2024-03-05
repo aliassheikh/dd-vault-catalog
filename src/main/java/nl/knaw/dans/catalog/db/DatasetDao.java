@@ -39,6 +39,15 @@ public class DatasetDao extends AbstractDAO<Dataset> {
         return Optional.ofNullable(dataset);
     }
 
+    public Optional<Dataset> findBySwordToken(String swordToken) {
+        CriteriaBuilder cb = currentSession().getCriteriaBuilder();
+        CriteriaQuery<Dataset> cq = cb.createQuery(Dataset.class);
+        Root<Dataset> root = cq.from(Dataset.class);
+        cq.select(root).where(cb.equal(root.get("swordToken"), swordToken));
+        Dataset dataset = currentSession().createQuery(cq).uniqueResult();
+        return Optional.ofNullable(dataset);
+    }
+
     public Dataset save(Dataset dataset) {
         if (dataset.getId() == null || get(dataset.getId()) == null) {
             persist(dataset);

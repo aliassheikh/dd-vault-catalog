@@ -22,6 +22,7 @@ import nl.knaw.dans.catalog.core.DatasetVersionExport;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -111,6 +112,7 @@ public class DatasetDaoTest {
 
             DatasetVersionExport datasetVersionExport = new DatasetVersionExport();
             datasetVersionExport.setBagId(uuid);
+            datasetVersionExport.setCreatedTimestamp(OffsetDateTime.now());
             datasetVersionExport.setOcflObjectVersionNumber(1);
             datasetVersionExport.setDataversePidVersion("dataversePidVersion");
             datasetVersionExport.setOtherId("otherId");
