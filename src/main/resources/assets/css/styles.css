@@ -1,7 +1,22 @@
-td.field-name {
-  font-weight: bold;
-  margin-right: 5px;
+body {
+    margin-left: 20px;
+    padding: 20px;
+    background: #E4F9FF00;
+    color: #444444;
+    border-color: #231F20;
+    border-width: 1px;
+    border-style: solid;
+    font-family: "Helvetica", serif;
+    font-weight: 400;
+    font-size: 12px;
 }
-td.field-value {
-  margin-left: 5px;
+
+table.dataset-metadata {
 }
+
+table.dataset-metadata td.field-name,
+table.dve-metadata td.field-name {
+    font-weight: bold;
+    width: 13em;
+}
+

@@ -19,6 +19,7 @@ import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.views.common.View;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import nl.knaw.dans.catalog.Conversions;
 import nl.knaw.dans.catalog.api.DatasetDto;
 import nl.knaw.dans.catalog.api.VersionExportDto;
@@ -38,6 +39,7 @@ import java.util.Comparator;
 import java.util.Optional;
 
 @RequiredArgsConstructor
+@Slf4j
 public class DatasetApiResource implements DatasetApi {
     private static final Conversions conversions = Mappers.getMapper(Conversions.class);
 
@@ -79,8 +81,8 @@ public class DatasetApiResource implements DatasetApi {
         else if (ocflObjectVersion.equals(latestDveInCatalog.getOcflObjectVersionNumber() + 1)) {
             dataset.getDatasetVersionExports().add(conversions.convert(versionExportDto));
             datasetDao.save(dataset);
-            // TODO: return URI to new DVE
-            return Response.created(null).build();
+            log.debug("Saved dataset; returning 200 OK");
+            return Response.ok().build();
         }
         else {
             return Response.status(Response.Status.BAD_REQUEST).entity("Invalid ocflObjectVersion; it must be equal or one greater than the latest DVE stored").build();

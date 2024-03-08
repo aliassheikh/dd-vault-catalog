@@ -28,5 +28,4 @@ public class DatasetView extends View {
         super("dataset.ftl");
         this.dataset = dataset;
     }
-
 }

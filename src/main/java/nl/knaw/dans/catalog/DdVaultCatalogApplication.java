@@ -34,6 +34,8 @@ import nl.knaw.dans.catalog.resources.ErrorView;
 import io.dropwizard.assets.AssetsBundle;
 
 import javax.ws.rs.core.MediaType;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DdVaultCatalogApplication extends Application<DdVaultCatalogConfig> {
     private final HibernateBundle<DdVaultCatalogConfig> hibernateBundle = new DdVaultHibernateBundle();

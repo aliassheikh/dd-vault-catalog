@@ -60,6 +60,16 @@ public interface Conversions {
         return datasetVersionExports;
     }
 
+    @Named("mapDatasetVersionExportListToVersionExportDtoList")
+    default List<VersionExportDto> mapDatasetVersionExportListToVersionExportDtoList(List<DatasetVersionExport> datasetVersionExports) {
+        List<VersionExportDto> versionExportDtos = new ArrayList<>();
+        for (DatasetVersionExport datasetVersionExport : datasetVersionExports) {
+            VersionExportDto versionExportDto = convert(datasetVersionExport);
+            versionExportDtos.add(versionExportDto);
+        }
+        return versionExportDtos;
+    }
+
     @AfterMapping
     default void setDataset(Object source, @MappingTarget Dataset dataset) {
         for (DatasetVersionExport datasetVersionExport : dataset.getDatasetVersionExports()) {
@@ -70,6 +80,8 @@ public interface Conversions {
     @Mapping(target = "datasetVersionExports", source = "datasetDto.versionExports", qualifiedByName = "mapVersionExportDtoListToDatasetVersionExportList")
     Dataset convert(DatasetDto datasetDto);
 
+
+    @Mapping(target = "versionExports", source = "dataset.datasetVersionExports", qualifiedByName = "mapDatasetVersionExportListToVersionExportDtoList")
     DatasetDto convert(Dataset dataset);
 
     default UUID stringToUuid(String value) {
