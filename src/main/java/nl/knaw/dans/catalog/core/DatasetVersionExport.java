@@ -72,9 +72,9 @@ public class DatasetVersionExport {
     @Column(name = "other_id_version")
     private String otherIdVersion;
 
-//    @Lob
-//    @Column(name = "metadata", columnDefinition = "TEXT")
-//    private String metadata;
+    @Lob
+    @Column(name = "metadata", columnDefinition = "TEXT")
+    private String metadata;
 
     @Column(name = "file_to_local_path")
     private String fileToLocalPath;

@@ -17,6 +17,7 @@
 package nl.knaw.dans.catalog;
 
 import com.fasterxml.jackson.databind.SerializationFeature;
+import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.core.Application;
 import io.dropwizard.core.setup.Bootstrap;
 import io.dropwizard.core.setup.Environment;
@@ -31,11 +32,8 @@ import nl.knaw.dans.catalog.db.DatasetDao;
 import nl.knaw.dans.catalog.resources.DatasetApiResource;
 import nl.knaw.dans.catalog.resources.DefaultApiResource;
 import nl.knaw.dans.catalog.resources.ErrorView;
-import io.dropwizard.assets.AssetsBundle;
 
 import javax.ws.rs.core.MediaType;
-import java.util.HashMap;
-import java.util.Map;
 
 public class DdVaultCatalogApplication extends Application<DdVaultCatalogConfig> {
     private final HibernateBundle<DdVaultCatalogConfig> hibernateBundle = new DdVaultHibernateBundle();
