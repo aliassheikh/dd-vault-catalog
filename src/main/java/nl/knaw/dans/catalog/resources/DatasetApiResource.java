@@ -46,9 +46,6 @@ public class DatasetApiResource implements DatasetApi {
     @NonNull
     private final DatasetDao datasetDao;
 
-    //    @Context
-    //    private UriInfo uriInfo;
-
     @Override
     @UnitOfWork
     public Response addDataset(String nbn, DatasetDto datasetDto) {
@@ -79,7 +76,9 @@ public class DatasetApiResource implements DatasetApi {
             return Response.ok().build();
         }
         else if (ocflObjectVersion.equals(latestDveInCatalog.getOcflObjectVersionNumber() + 1)) {
-            dataset.getDatasetVersionExports().add(conversions.convert(versionExportDto));
+            var datasetVersionExport = conversions.convert(versionExportDto);
+            datasetVersionExport.setDataset(dataset); // No way to have this done automatically in an after-mapping method it seems.
+            dataset.getDatasetVersionExports().add(datasetVersionExport);
             datasetDao.save(dataset);
             log.debug("Saved dataset; returning 200 OK");
             return Response.ok().build();

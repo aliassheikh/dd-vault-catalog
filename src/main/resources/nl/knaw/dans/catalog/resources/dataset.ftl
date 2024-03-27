@@ -37,7 +37,9 @@
     </#if>
 </table>
 
-<#list dataset.datasetVersionExports as dve>
+<#-- Do not use dataset.datasetVersionExports, as it may trigger a fetch of the 'metadata' field from outside the
+     @UnitOfWork scope, causing a Hibernate exception -->
+<#list datasetVersionExports as dve>
     <h3>v${dve.ocflObjectVersionNumber!"n/a"}</h3>
     <#if dve.deaccessioned??>
         <p class="deaccessioned">This version has been deaccessioned</p>

@@ -18,14 +18,51 @@ package nl.knaw.dans.catalog.resources;
 import io.dropwizard.views.common.View;
 import lombok.Getter;
 import nl.knaw.dans.catalog.core.Dataset;
+import nl.knaw.dans.catalog.core.DatasetVersionExport;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 public class DatasetView extends View {
 
     private final Dataset dataset;
+    private final List<DatasetVersionExport> datasetVersionExports;
 
     protected DatasetView(Dataset dataset) {
         super("dataset.ftl");
+        /*
+         * N.B. Everything to be displayed must be fetched from the database before the View object leaves the @UnitOfWork
+         * scope. Otherwise, the database may be accessed outside a transaction (especially for LOB fields), which is not
+         * allowed. This is even true for fields that are not explicitly references from the template, such as 'metadata'.
+         * As an alternative, the complete Dataset, DVE and all its fields could be fetched eagerly, but that could be
+         * inefficient.
+         */
         this.dataset = dataset;
+        this.datasetVersionExports = copyWithoutMetadataField(dataset.getDatasetVersionExports());
+    }
+
+    private List<DatasetVersionExport> copyWithoutMetadataField(List<DatasetVersionExport> originalDves) {
+        List<DatasetVersionExport> copy = new ArrayList<>();
+        for (DatasetVersionExport dve : originalDves) {
+            DatasetVersionExport dveCopy = new DatasetVersionExport();
+            dveCopy.setId(dve.getId());
+            dveCopy.setDataset(dve.getDataset());
+            dveCopy.setBagId(dve.getBagId());
+            dveCopy.setOcflObjectVersionNumber(dve.getOcflObjectVersionNumber());
+            dveCopy.setCreatedTimestamp(dve.getCreatedTimestamp());
+            dveCopy.setArchiveTimestamp(dve.getArchiveTimestamp());
+            dveCopy.setDataversePidVersion(dve.getDataversePidVersion());
+            dveCopy.setOtherId(dve.getOtherId());
+            dveCopy.setOtherIdVersion(dve.getOtherIdVersion());
+            dveCopy.setMetadata(null); // Not displayed, so avoid retrieving it from the database
+            dveCopy.setFileToLocalPath(dve.getFileToLocalPath());
+            dveCopy.setDeaccessioned(dve.getDeaccessioned());
+            dveCopy.setExporter(dve.getExporter());
+            dveCopy.setExporterVersion(dve.getExporterVersion());
+            dveCopy.setSkeletonRecord(dve.getSkeletonRecord());
+            copy.add(dveCopy);
+        }
+        return copy;
     }
 }
