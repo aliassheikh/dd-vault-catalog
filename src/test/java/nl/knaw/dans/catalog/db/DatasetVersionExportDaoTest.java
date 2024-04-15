@@ -22,6 +22,7 @@ import nl.knaw.dans.catalog.core.DatasetVersionExport;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
@@ -38,25 +39,25 @@ public class DatasetVersionExportDaoTest {
 
     @Test
     public void testFindByBagId() {
-        var uuid = UUID.randomUUID();
+        var swordToken = "sword:f98c65c0-96e8-4c7e-b7a6-50f29cfa8d3f";
+        var bagId = URI.create("urn:uuid:" + UUID.randomUUID());
         db.inTransaction(() -> {
             var parentDataset = new Dataset();
             parentDataset.setNbn("123");
-            parentDataset.setTitle("title");
             parentDataset.setDataversePid("dataversePid");
-            parentDataset.setSwordToken("swordToken");
+            parentDataset.setSwordToken(swordToken);
             parentDataset.setDataSupplier("dataSupplier");
             parentDataset.setDatastation("datastation");
             datasetDao.save(parentDataset);
             DatasetVersionExport datasetVersionExport = new DatasetVersionExport();
             datasetVersionExport.setDataset(parentDataset);
-            datasetVersionExport.setBagId(uuid);
+            datasetVersionExport.setBagId(bagId);
             datasetVersionExport.setCreatedTimestamp(OffsetDateTime.now());
             datasetVersionExport.setOcflObjectVersionNumber(1);
             dveDao.add(datasetVersionExport);
             dveDao.add(datasetVersionExport);
         });
-        var datasetVersionExportFound = dveDao.findByBagId(uuid);
+        var datasetVersionExportFound = dveDao.findByBagId(bagId);
         assertThat(datasetVersionExportFound).isNotNull();
     }
 

@@ -20,21 +20,20 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import nl.knaw.dans.catalog.Conversions;
 import nl.knaw.dans.catalog.db.DatasetVersionExportDao;
-import nl.knaw.dans.lib.util.UrnUuid;
 import org.mapstruct.factory.Mappers;
 
 import javax.ws.rs.core.Response;
+import java.net.URI;
 
 @RequiredArgsConstructor
 public class DatasetVersionExportApiResource implements DatasetVersionExportApi {
     private static final Conversions conversions = Mappers.getMapper(Conversions.class);
-
     @NonNull
     private final DatasetVersionExportDao dao;
 
     @Override
     @UnitOfWork
     public Response getDatasetVersionExportByBagId(String bagId) {
-        return Response.ok(conversions.convert(dao.findByBagId(UrnUuid.fromString(bagId).getUuid()))).build();
+        return Response.ok(conversions.convert(dao.findByBagId(URI.create(bagId)))).build();
     }
 }

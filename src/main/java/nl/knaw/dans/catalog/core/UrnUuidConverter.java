@@ -13,24 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.knaw.dans.catalog.resources;
+package nl.knaw.dans.catalog.core;
 
-import lombok.extern.slf4j.Slf4j;
-import nl.knaw.dans.lib.util.VersionProvider;
+import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
+import java.net.URI;
 
-import javax.ws.rs.core.Response;
-
-@Slf4j
-public class DefaultApiResource implements DefaultApi {
+@Converter(autoApply = true)
+public class UrnUuidConverter implements AttributeConverter<URI, String> {
 
     @Override
-    public Response getInfo() {
-        try {
-            return Response.ok(String.format("DD Vault Catalog Service v%s running", new VersionProvider().getVersion())).build();
-        }
-        catch (Exception e) {
-            log.error("Error while getting version", e);
-            return Response.serverError().entity("Error while getting version").build();
-        }
+    public String convertToDatabaseColumn(URI urn) {
+        return urn.getSchemeSpecificPart().substring("uuid:".length());
+    }
+
+    @Override
+    public URI convertToEntityAttribute(String uuid) {
+        return URI.create("urn:uuid:" + uuid);
     }
 }

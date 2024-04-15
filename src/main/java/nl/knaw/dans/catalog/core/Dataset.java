@@ -21,9 +21,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import nl.knaw.dans.validation.SwordToken;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -32,8 +34,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "dataset", uniqueConstraints = {
@@ -56,13 +58,12 @@ public class Dataset {
     @Column(name = "nbn", nullable = false)
     private String nbn;
 
-    @Column(name = "title")
-    private String title;
-
     @Column(name = "dataverse_pid")
     private String dataversePid;
 
     @Column(name = "sword_token")
+    @Convert(converter = SwordTokenConverter.class)
+    @SwordToken
     private String swordToken;
 
     @Column(name = "data_supplier")
@@ -74,7 +75,6 @@ public class Dataset {
     @OneToMany(mappedBy = "dataset", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     private List<DatasetVersionExport> datasetVersionExports = new ArrayList<>();
-
 
     public void addDatasetVersionExport(DatasetVersionExport dve) {
         dve.setDataset(this);

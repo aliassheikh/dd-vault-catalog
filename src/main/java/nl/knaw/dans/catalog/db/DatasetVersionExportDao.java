@@ -17,12 +17,14 @@ package nl.knaw.dans.catalog.db;
 
 import io.dropwizard.hibernate.AbstractDAO;
 import nl.knaw.dans.catalog.core.DatasetVersionExport;
+import nl.knaw.dans.validation.UrnUuid;
 import org.hibernate.SessionFactory;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.net.URI;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -31,7 +33,9 @@ public class DatasetVersionExportDao extends AbstractDAO<DatasetVersionExport> {
         super(sessionFactory);
     }
 
-    public DatasetVersionExport findByBagId(UUID bagId) {
+    public DatasetVersionExport findByBagId(@UrnUuid URI bagId) {
+        
+        
         CriteriaBuilder cb = currentSession().getCriteriaBuilder();
         CriteriaQuery<DatasetVersionExport> cq = cb.createQuery(DatasetVersionExport.class);
         Root<DatasetVersionExport> root = cq.from(DatasetVersionExport.class);

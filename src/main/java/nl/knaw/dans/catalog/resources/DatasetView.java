@@ -51,12 +51,12 @@ public class DatasetView extends View {
             dveCopy.setBagId(dve.getBagId());
             dveCopy.setOcflObjectVersionNumber(dve.getOcflObjectVersionNumber());
             dveCopy.setCreatedTimestamp(dve.getCreatedTimestamp());
-            dveCopy.setArchiveTimestamp(dve.getArchiveTimestamp());
+            dveCopy.setArchivedTimestamp(dve.getArchivedTimestamp());
             dveCopy.setDataversePidVersion(dve.getDataversePidVersion());
             dveCopy.setOtherId(dve.getOtherId());
             dveCopy.setOtherIdVersion(dve.getOtherIdVersion());
             dveCopy.setMetadata(null); // Not displayed, so avoid retrieving it from the database
-            dveCopy.setFileToLocalPath(dve.getFileToLocalPath());
+            dveCopy.setFilePidToLocalPath(dve.getFilePidToLocalPath());
             dveCopy.setDeaccessioned(dve.getDeaccessioned());
             dveCopy.setExporter(dve.getExporter());
             dveCopy.setExporterVersion(dve.getExporterVersion());

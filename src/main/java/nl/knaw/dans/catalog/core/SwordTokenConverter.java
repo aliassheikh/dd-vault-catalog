@@ -13,24 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.knaw.dans.catalog.resources;
+package nl.knaw.dans.catalog.core;
 
-import lombok.extern.slf4j.Slf4j;
-import nl.knaw.dans.lib.util.VersionProvider;
+import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
 
-import javax.ws.rs.core.Response;
-
-@Slf4j
-public class DefaultApiResource implements DefaultApi {
+@Converter(autoApply = true)
+public class SwordTokenConverter implements AttributeConverter<String, String> {
 
     @Override
-    public Response getInfo() {
-        try {
-            return Response.ok(String.format("DD Vault Catalog Service v%s running", new VersionProvider().getVersion())).build();
-        }
-        catch (Exception e) {
-            log.error("Error while getting version", e);
-            return Response.serverError().entity("Error while getting version").build();
-        }
+    public String convertToDatabaseColumn(String swordToken) {
+        return swordToken.substring("sword:".length());
+    }
+
+    @Override
+    public String convertToEntityAttribute(String uuid) {
+        return "sword:" + uuid;
     }
 }

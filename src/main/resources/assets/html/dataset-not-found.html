@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>DANS Data Vault Catalog - Not Found</title>
+    <link rel="stylesheet" type="text/css" href="/assets/css/styles.css">
+    <script>
+        function setAction() {
+            var nbn = document.getElementById('nbn').value;
+            var form = document.getElementById('searchForm');
+            form.action = '/dataset/' + nbn;
+        }
+    </script>
+</head>
+<body>
+<h1>DANS Data Vault Catalog</h1>
+<form id="searchForm" method="GET" onsubmit="setAction()">
+    <input type="text" id="nbn" placeholder="Enter NBN">
+    <input type="submit" value="Search">
+</form>
+</body>

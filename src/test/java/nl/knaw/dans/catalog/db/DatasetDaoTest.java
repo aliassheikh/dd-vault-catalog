@@ -22,6 +22,7 @@ import nl.knaw.dans.catalog.core.DatasetVersionExport;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
@@ -37,12 +38,12 @@ public class DatasetDaoTest {
 
     @Test
     public void testFindById() {
+        var swordToken = "sword:f98c65c0-96e8-4c7e-b7a6-50f29cfa8d3f";
         db.inTransaction(() -> {
             Dataset dataset = new Dataset();
             dataset.setNbn("123");
-            dataset.setTitle("title");
             dataset.setDataversePid("dataversePid");
-            dataset.setSwordToken("swordToken");
+            dataset.setSwordToken(swordToken);
             dataset.setDataSupplier("dataSupplier");
             dataset.setDatastation("datastation");
             dao.save(dataset);
@@ -52,9 +53,8 @@ public class DatasetDaoTest {
         db.inTransaction(() -> {
             var dataset = dao.findByNbn("123");
             assertThat(dataset).isPresent();
-            assertThat(dataset.get().getTitle()).isEqualTo("title");
             assertThat(dataset.get().getDataversePid()).isEqualTo("dataversePid");
-            assertThat(dataset.get().getSwordToken()).isEqualTo("swordToken");
+            assertThat(dataset.get().getSwordToken()).isEqualTo(swordToken);
             assertThat(dataset.get().getDataSupplier()).isEqualTo("dataSupplier");
             assertThat(dataset.get().getDatastation()).isEqualTo("datastation");
         });
@@ -62,12 +62,12 @@ public class DatasetDaoTest {
 
     @Test
     public void testSave() {
+        var swordToken = "sword:f98c65c0-96e8-4c7e-b7a6-50f29cfa8d3f";
         db.inTransaction(() -> {
             Dataset dataset = new Dataset();
             dataset.setNbn("123");
-            dataset.setTitle("title");
             dataset.setDataversePid("dataversePid");
-            dataset.setSwordToken("swordToken");
+            dataset.setSwordToken(swordToken);
             dataset.setDataSupplier("dataSupplier");
             dataset.setDatastation("datastation");
             dao.save(dataset);
@@ -77,41 +77,41 @@ public class DatasetDaoTest {
 
     @Test
     public void testUpdate() {
+        var swordToken = "sword:f98c65c0-96e8-4c7e-b7a6-50f29cfa8d3f";
         db.inTransaction(() -> {
             Dataset dataset = new Dataset();
             dataset.setNbn("123");
-            dataset.setTitle("title");
             dataset.setDataversePid("dataversePid");
-            dataset.setSwordToken("swordToken");
+            dataset.setSwordToken(swordToken);
             dataset.setDataSupplier("dataSupplier");
             dataset.setDatastation("datastation");
             dao.save(dataset);
             assertThat(dataset.getId()).isNotNull();
-            dataset.setTitle("new title");
+            dataset.setDataSupplier("new dataSupplier");
             dao.save(dataset);
         });
 
         db.inTransaction(() -> {
             var dataset = dao.findByNbn("123");
             assertThat(dataset).isPresent();
-            assertThat(dataset.get().getTitle()).isEqualTo("new title");
+            assertThat(dataset.get().getDataSupplier()).isEqualTo("new dataSupplier");
         });
     }
 
     @Test
     public void testSaveWithDatasetVersionExports() {
+        var swordToken = "sword:f98c65c0-96e8-4c7e-b7a6-50f29cfa8d3f";
         db.inTransaction(() -> {
             Dataset dataset = new Dataset();
             dataset.setNbn("123");
-            dataset.setTitle("title");
             dataset.setDataversePid("dataversePid");
-            dataset.setSwordToken("swordToken");
+            dataset.setSwordToken(swordToken);
             dataset.setDataSupplier("dataSupplier");
             dataset.setDatastation("datastation");
-            var uuid = UUID.randomUUID();
+            var bagId = URI.create("urn:uuid:" + UUID.randomUUID());
 
             DatasetVersionExport datasetVersionExport = new DatasetVersionExport();
-            datasetVersionExport.setBagId(uuid);
+            datasetVersionExport.setBagId(bagId);
             datasetVersionExport.setCreatedTimestamp(OffsetDateTime.now());
             datasetVersionExport.setOcflObjectVersionNumber(1);
             datasetVersionExport.setDataversePidVersion("dataversePidVersion");
@@ -120,7 +120,7 @@ public class DatasetDaoTest {
             dao.save(dataset);
             assertThat(dataset.getId()).isNotNull();
             assertThat(dataset.getDatasetVersionExports().get(0).getId()).isNotNull();
-            assertThat(dataset.getDatasetVersionExports().get(0).getBagId()).isEqualTo(uuid);
+            assertThat(dataset.getDatasetVersionExports().get(0).getBagId()).isEqualTo(bagId);
         });
     }
 
