@@ -26,7 +26,6 @@ import nl.knaw.dans.catalog.api.VersionExportDto;
 import nl.knaw.dans.catalog.core.Dataset;
 import nl.knaw.dans.catalog.core.DatasetVersionExport;
 import nl.knaw.dans.catalog.db.DatasetDao;
-import nl.knaw.dans.catalog.db.DatasetVersionExportDao;
 import org.apache.http.HeaderElement;
 import org.apache.http.message.BasicHeaderValueParser;
 import org.mapstruct.factory.Mappers;
@@ -34,7 +33,6 @@ import org.mapstruct.factory.Mappers;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -98,7 +96,7 @@ public class DatasetApiResource implements DatasetApi {
             .map(MediaType::valueOf);
         Optional<Dataset> datasetOptional = datasetDao.findByNbn(nbn);
         if (datasetOptional.isEmpty()) {
-            return Response.seeOther(URI.create("/assets/html/dataset-not-found.html")).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(new FindDatasetView()).build();
         }
         Dataset dataset = datasetOptional.get();
         if (acceptedMediaTypes.anyMatch(MediaType.TEXT_HTML_TYPE::isCompatible)) {

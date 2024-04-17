@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>DANS Data Vault Catalog - {{dataset.nbn}} - {{dataset.title}}</title>
+    <link rel="stylesheet" type="text/css" href="/assets/css/styles.css">
+</head>
+<body>
+<h1>DANS Data Vault Catalog</h1>
+<h2>{{dataset.title}}</h2>
+
+<table class="dataset-metadata">
+    <tr>
+        <td class="field-name">NBN</td>
+        <td class="field-value">{{dataset.nbn}}</td>
+    </tr>
+    <tr>
+        <td class="field-name">Data Station</td>
+        <td class="field-value">{{dataset.datastation}}</td>
+    </tr>
+    {{#dataset.dataversePid}}   
+    <tr>
+        <td class="field-name">Dataverse PID</td>
+        <td class="field-value">{{.}}</td>
+    </tr>
+    {{/dataset.dataversePid}}
+    {{#dataset.dataSupplier}}
+    <tr>
+        <td class="field-name">Data supplier</td>
+        <td class="field-value">{{.}}</td>
+    </tr>
+    {{/dataset.dataSupplier}}
+    {{#dataset.swordToken}}
+    <tr>
+        <td class="field-name">SWORD token</td>
+        <td class="field-value">{{.}}</td>
+    </tr>
+    {{/dataset.swordToken}}
+</table>
+
+{{#datasetVersionExports}}
+    <h3>v{{ocflObjectVersionNumber}}</h3>
+    {{#deaccessioned}}
+        <p class="deaccessioned">This version has been deaccessioned.</p>
+    {{/deaccessioned}}
+    <table class="dve-metadata">
+        <tr>
+            <td class="field-name">Bag ID</td>
+            <td class="field-value">{{bagId}}</td>
+        </tr>
+        <tr>
+            <td class="field-name">OCFL Object version</td>
+            <td class="field-value">{{ocflObjectVersionNumber}}</td>
+        </tr>
+        <tr>
+            <td class="field-name">Creation timestamp</td>
+            <td class="field-value">{{createdTimestamp}}</td>
+        </tr>
+        <tr>
+            <td class="field-name">Archival timestamp</td>
+            <td class="field-value">{{archivedTimestamp}}</td>
+        </tr>
+        {{#datasetPidVersion}}
+        <tr>
+            <td class="field-name">DV PID version</td>
+            <td class="field-value">{{.}}</td>
+        </tr>
+        {{/datasetPidVersion}}
+        {{#otherId}}
+        <tr>
+            <td class="field-name">Other ID</td>
+            <td class="field-value">{{.}}</td>
+        </tr>
+        {{/otherId}}
+        {{#otherIdVersion}}
+        <tr>
+            <td class="field-name">Other ID version</td>
+            <td class="field-value">{{.}}</td>
+        </tr>
+        {{/otherIdVersion}}
+        {{#exporter}}
+        <tr>
+            <td class="field-name">Exporter</td>
+            <td class="field-value">{{.}}</td>
+        </tr>
+        {{/exporter}}
+        {{#exporterVersion}}
+        <tr>
+            <td class="field-name">Other ID version</td>
+            <td class="field-value">{{.}}</td>
+        </tr>
+        {{/exporterVersion}}
+    </table>
+{{/datasetVersionExports}}
+
+</body>
+</html>

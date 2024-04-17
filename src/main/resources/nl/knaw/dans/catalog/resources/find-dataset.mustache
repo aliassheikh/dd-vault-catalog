@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>DANS Data Vault Catalog - Not Found</title>
+    <title>DANS Data Vault Catalog - Find Dataset</title>
     <link rel="stylesheet" type="text/css" href="/assets/css/styles.css">
     <script>
         function setAction() {
@@ -12,9 +12,10 @@
     </script>
 </head>
 <body>
-<h1>DANS Data Vault Catalog</h1>
+<h1>DANS Data Vault Catalog (${project.version})</h1>
 <form id="searchForm" method="GET" onsubmit="setAction()">
-    <input type="text" id="nbn" placeholder="Enter NBN">
+    <input type="text" id="nbn" placeholder="Enter NBN" value="{{nbn}}">
     <input type="submit" value="Search">
 </form>
 </body>
+</html>

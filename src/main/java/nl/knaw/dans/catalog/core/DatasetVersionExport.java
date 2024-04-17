@@ -87,6 +87,7 @@ public class DatasetVersionExport {
     @Column(name = "metadata")
     private String metadata;
 
+    @Lob
     @Column(name = "file_pid_to_local_path")
     private String filePidToLocalPath;
 

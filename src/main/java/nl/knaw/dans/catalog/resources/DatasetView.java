@@ -30,7 +30,7 @@ public class DatasetView extends View {
     private final List<DatasetVersionExport> datasetVersionExports;
 
     protected DatasetView(Dataset dataset) {
-        super("dataset.ftl");
+        super("dataset.mustache");
         /*
          * N.B. Everything to be displayed must be fetched from the database before the View object leaves the @UnitOfWork
          * scope. Otherwise, the database may be accessed outside a transaction (especially for LOB fields), which is not

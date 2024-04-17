@@ -39,7 +39,7 @@
 
     <properties>
         <main-class>nl.knaw.dans.catalog.DdVaultCatalogApplication</main-class>
-        <dd-vault-catalog-api.version>0.5.0</dd-vault-catalog-api.version>
+        <dd-vault-catalog-api.version>0.5.1-SNAPSHOT</dd-vault-catalog-api.version>
     </properties>
 
     <dependencies>
@@ -91,7 +91,7 @@
         </dependency>
         <dependency>
             <groupId>io.dropwizard</groupId>
-            <artifactId>dropwizard-views-freemarker</artifactId>
+            <artifactId>dropwizard-views-mustache</artifactId>
         </dependency>
         <dependency>
             <groupId>org.mapstruct</groupId>
@@ -146,6 +146,22 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>nl/knaw/dans/catalog/resources/find-dataset.mustache</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <excludes>
+                    <exclude>nl/knaw/dans/catalog/resources/find-dataset.mustache</exclude>
+                </excludes>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.jacoco</groupId>

@@ -25,7 +25,7 @@ public class ErrorView extends View {
     private final ErrorMessage errorMessage;
 
     public ErrorView(ErrorMessage errorMessage) {
-        super("error.ftl");
+        super("error.mustache");
         this.errorMessage = errorMessage;
     }
 }

@@ -15,15 +15,11 @@
  */
 package nl.knaw.dans.catalog.resources;
 
-import lombok.extern.slf4j.Slf4j;
+import io.dropwizard.views.common.View;
 
-import javax.ws.rs.core.Response;
+public class FindDatasetView extends View {
 
-@Slf4j
-public class DefaultApiResource implements DefaultApi {
-
-    @Override
-    public Response getInfo() {
-        return Response.ok(new FindDatasetView()).build();
+    public FindDatasetView() {
+        super("find-dataset.mustache");
     }
 }
