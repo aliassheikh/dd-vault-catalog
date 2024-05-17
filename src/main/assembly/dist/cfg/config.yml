@@ -25,3 +25,5 @@ logging:
       currentLogFilename: /var/opt/dans.knaw.nl/log/dd-vault-catalog/dd-vault-catalog.log
       type: file
       timeZone: system
+  loggers:
+    'org.hibernate.engine.internal.StatisticalLoggingSessionEventListener': 'OFF'
