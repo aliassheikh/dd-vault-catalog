@@ -5,6 +5,8 @@ Description=Vault Catalog Service
 ExecStart=/opt/dans.knaw.nl/dd-vault-catalog/bin/dd-vault-catalog server /etc/opt/dans.knaw.nl/dd-vault-catalog/config.yml
 # Java returns 143 even if the SIGTERM was handled correctly.
 SuccessExitStatus=143
+Environment="INITIAL_HEAP_SIZE=-Xms64m"
+Environment="LC_ALL=en_US.UTF-8"
 
 User=dd-vault-catalog
 Group=dd-vault-catalog
