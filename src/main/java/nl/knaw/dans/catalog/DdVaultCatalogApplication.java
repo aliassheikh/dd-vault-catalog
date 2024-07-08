@@ -27,11 +27,12 @@ import io.dropwizard.jersey.errors.ErrorMessage;
 import io.dropwizard.views.common.View;
 import io.dropwizard.views.common.ViewBundle;
 import nl.knaw.dans.catalog.config.DdVaultCatalogConfig;
-import nl.knaw.dans.catalog.core.DefaultMediaTypeFilter;
 import nl.knaw.dans.catalog.db.DatasetDao;
 import nl.knaw.dans.catalog.resources.DatasetApiResource;
 import nl.knaw.dans.catalog.resources.DefaultApiResource;
 import nl.knaw.dans.catalog.resources.ErrorView;
+import nl.knaw.dans.catalog.resources.IllegalArgumentExceptionMapper;
+import nl.knaw.dans.lib.util.DefaultMediaTypeFilter;
 
 import javax.ws.rs.core.MediaType;
 
@@ -61,6 +62,7 @@ public class DdVaultCatalogApplication extends Application<DdVaultCatalogConfig>
         environment.jersey().register(new DefaultApiResource());
         environment.jersey().register(new DatasetApiResource(datasetDao));
         environment.jersey().register(new DefaultMediaTypeFilter());
+        environment.jersey().register(new IllegalArgumentExceptionMapper());
         environment.jersey().register(new ErrorEntityWriter<ErrorMessage, View>(MediaType.TEXT_HTML_TYPE, View.class) {
 
             @Override

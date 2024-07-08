@@ -13,22 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.knaw.dans.catalog.core;
+package nl.knaw.dans.catalog.resources;
 
-import javax.persistence.AttributeConverter;
-import javax.persistence.Converter;
-import java.net.URI;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.ExceptionMapper;
 
-@Converter(autoApply = true)
-public class UrnUuidConverter implements AttributeConverter<URI, String> {
-
+public class IllegalArgumentExceptionMapper implements ExceptionMapper<IllegalArgumentException> {
     @Override
-    public String convertToDatabaseColumn(URI urn) {
-        return urn.getSchemeSpecificPart().substring("uuid:".length());
-    }
-
-    @Override
-    public URI convertToEntityAttribute(String uuid) {
-        return URI.create("urn:uuid:" + uuid);
+    public Response toResponse(IllegalArgumentException exception) {
+        return Response.status(Response.Status.BAD_REQUEST).entity(exception.getMessage()).build();
     }
 }

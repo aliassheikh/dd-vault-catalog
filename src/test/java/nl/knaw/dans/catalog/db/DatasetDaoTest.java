@@ -19,6 +19,7 @@ import io.dropwizard.testing.junit5.DAOTestExtension;
 import io.dropwizard.testing.junit5.DropwizardExtensionsSupport;
 import nl.knaw.dans.catalog.core.Dataset;
 import nl.knaw.dans.catalog.core.DatasetVersionExport;
+import nl.knaw.dans.catalog.core.FileMeta;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -33,6 +34,7 @@ public class DatasetDaoTest {
     private final DAOTestExtension db = DAOTestExtension.newBuilder()
         .addEntityClass(Dataset.class)
         .addEntityClass(DatasetVersionExport.class)
+        .addEntityClass(FileMeta.class)
         .build();
     private final DatasetDao dao = new DatasetDao(db.getSessionFactory());
 
@@ -121,6 +123,43 @@ public class DatasetDaoTest {
             assertThat(dataset.getId()).isNotNull();
             assertThat(dataset.getDatasetVersionExports().get(0).getId()).isNotNull();
             assertThat(dataset.getDatasetVersionExports().get(0).getBagId()).isEqualTo(bagId);
+        });
+    }
+
+    @Test
+    public void testSaveWithFileMetas() {
+        var swordToken = "sword:f98c65c0-96e8-4c7e-b7a6-50f29cfa8d3f";
+        db.inTransaction(() -> {
+            Dataset dataset = new Dataset();
+            dataset.setNbn("123");
+            dataset.setDataversePid("dataversePid");
+            dataset.setSwordToken(swordToken);
+            dataset.setDataSupplier("dataSupplier");
+            dataset.setDatastation("datastation");
+            var bagId = URI.create("urn:uuid:" + UUID.randomUUID());
+
+            DatasetVersionExport datasetVersionExport = new DatasetVersionExport();
+            datasetVersionExport.setBagId(bagId);
+            datasetVersionExport.setCreatedTimestamp(OffsetDateTime.now());
+            datasetVersionExport.setOcflObjectVersionNumber(1);
+            datasetVersionExport.setDataversePidVersion("dataversePidVersion");
+            datasetVersionExport.setOtherId("otherId");
+            dataset.addDatasetVersionExport(datasetVersionExport);
+
+            FileMeta fileMeta = new FileMeta();
+            fileMeta.setFilepath("filepath");
+            fileMeta.setFileUri(URI.create("http://example.com"));
+            fileMeta.setByteSize(123L);
+            fileMeta.setSha1sum("sha1sum");
+            datasetVersionExport.addFileMeta(fileMeta);
+
+            dao.save(dataset);
+            assertThat(dataset.getId()).isNotNull();
+            assertThat(dataset.getDatasetVersionExports().get(0).getId()).isNotNull();
+            assertThat(dataset.getDatasetVersionExports().get(0).getBagId()).isEqualTo(bagId);
+            assertThat(dataset.getDatasetVersionExports().get(0).getFileMetas().get(0).getId()).isNotNull();
+            assertThat(dataset.getDatasetVersionExports().get(0).getFileMetas().get(0).getFilepath()).isEqualTo("filepath");
+            assertThat(dataset.getDatasetVersionExports().get(0).getFileMetas().get(0).getFileUri()).isEqualTo(URI.create("http://example.com"));
         });
     }
 

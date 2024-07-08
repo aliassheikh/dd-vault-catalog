@@ -18,6 +18,7 @@ package nl.knaw.dans.catalog.db;
 import io.dropwizard.hibernate.AbstractDAO;
 import nl.knaw.dans.catalog.core.Dataset;
 import org.hibernate.SessionFactory;
+import org.hibernate.exception.ConstraintViolationException;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -49,12 +50,17 @@ public class DatasetDao extends AbstractDAO<Dataset> {
     }
 
     public Dataset save(Dataset dataset) {
-        if (dataset.getId() == null || get(dataset.getId()) == null) {
-            persist(dataset);
+        try {
+            if (dataset.getId() == null || get(dataset.getId()) == null) {
+                persist(dataset);
+            }
+            else {
+                currentSession().update(dataset);
+            }
+            return dataset;
         }
-        else {
-            currentSession().update(dataset);
+        catch (ConstraintViolationException e) {
+            throw new IllegalArgumentException(e.getSQLException().getMessage());
         }
-        return dataset;
     }
 }

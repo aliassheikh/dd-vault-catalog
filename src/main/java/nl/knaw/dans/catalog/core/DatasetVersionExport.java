@@ -21,8 +21,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import nl.knaw.dans.convert.jpa.UrnUuidConverter;
 import nl.knaw.dans.validation.UrnUuid;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
@@ -32,16 +34,19 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import java.net.URI;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "dataset_version_export", uniqueConstraints = {
     @UniqueConstraint(columnNames = {
-        "bag_id",
+        "dataset_id", "ocfl_object_version_number"
     })
 })
 @Getter
@@ -74,6 +79,9 @@ public class DatasetVersionExport {
     @Column(name = "archived_timestamp")
     private OffsetDateTime archivedTimestamp;
 
+    @Column(name = "title")
+    private String title;
+    
     @Column(name = "dataverse_pid_version")
     private String dataversePidVersion;
 
@@ -87,10 +95,6 @@ public class DatasetVersionExport {
     @Column(name = "metadata")
     private String metadata;
 
-    @Lob
-    @Column(name = "file_pid_to_local_path")
-    private String filePidToLocalPath;
-
     @Column(name = "deaccessioned")
     private Boolean deaccessioned;
 
@@ -102,4 +106,13 @@ public class DatasetVersionExport {
 
     @Column(name = "skeleton_record")
     private Boolean skeletonRecord;
+
+    @OneToMany(mappedBy = "versionExport", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    private List<FileMeta> fileMetas = new ArrayList<>();
+    
+    public void addFileMeta(FileMeta fileMeta) {
+        fileMetas.add(fileMeta);
+        fileMeta.setVersionExport(this);
+    }
 }

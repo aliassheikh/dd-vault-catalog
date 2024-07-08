@@ -19,10 +19,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.knaw.dans.catalog.api.DatasetDto;
+import nl.knaw.dans.catalog.api.FileMetaDto;
 import nl.knaw.dans.catalog.api.VersionExportDto;
 import nl.knaw.dans.catalog.core.Dataset;
 import nl.knaw.dans.catalog.core.DatasetVersionExport;
-import nl.knaw.dans.lib.util.UrnUuid;
+import nl.knaw.dans.catalog.core.FileMeta;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -33,7 +34,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * Conversion between DTOs and domain objects.
@@ -43,13 +43,48 @@ public interface Conversions {
 
     ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
+    FileMetaDto convert(FileMeta fileMeta);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "versionExport", ignore = true)
+    FileMeta convert(FileMetaDto fileMetaDto);
+
+    @Named("mapFileMetaDtoListToFileMetaList")
+    default List<FileMeta> mapFileMetaDtoListToFileMetaList(List<FileMetaDto> fileMetaDtos) {
+        List<FileMeta> fileMetas = new ArrayList<>();
+        for (FileMetaDto fileMetaDto : fileMetaDtos) {
+            FileMeta fileMeta = convert(fileMetaDto);
+            fileMetas.add(fileMeta);
+        }
+        return fileMetas;
+    }
+
+    @Named("mapFileMetaListToFileMetaDtoList")
+    default List<FileMetaDto> mapFileMetaListToFileMetaDtoList(List<FileMeta> fileMetas) {
+        List<FileMetaDto> fileMetaDtos = new ArrayList<>();
+        for (FileMeta fileMeta : fileMetas) {
+            FileMetaDto fileMetaDto = convert(fileMeta);
+            fileMetaDtos.add(fileMetaDto);
+        }
+        return fileMetaDtos;
+    }
+
     @Mapping(target = "datasetNbn", source = "dataset.nbn")
-    @Mapping(target = "removeMetadataItem", ignore = true) // Not sure why mapstruct thinks the removeMetadataItem method is a property
+    @Mapping(target = "removeFileMetasItem", ignore = true) // Not sure why mapstruct thinks the removeFileMetasItem method is a property
+    @Mapping(target = "fileMetas", source = "datasetVersionExport.fileMetas", qualifiedByName = "mapFileMetaListToFileMetaDtoList")
     VersionExportDto convert(DatasetVersionExport datasetVersionExport);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "dataset", ignore = true)
+    @Mapping(target = "fileMetas", source = "versionExportDto.fileMetas", qualifiedByName = "mapFileMetaDtoListToFileMetaList")
     DatasetVersionExport convert(VersionExportDto versionExportDto);
+
+    @AfterMapping
+    default void setDataset(Object source, @MappingTarget DatasetVersionExport dve) {
+        for (FileMeta fileMeta : dve.getFileMetas()) {
+            fileMeta.setVersionExport(dve);
+        }
+    }
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "dataset", ignore = true)
@@ -86,12 +121,11 @@ public interface Conversions {
     @Mapping(target = "id", ignore = true)
     Dataset convert(DatasetDto datasetDto);
 
-
     @Mapping(target = "versionExports", source = "dataset.datasetVersionExports", qualifiedByName = "mapDatasetVersionExportListToVersionExportDtoList")
-    @Mapping(target = "removeVersionExportsItem", ignore = true) // Not sure why mapstruct thinks the removeVersionExportsItem method is a property
+    @Mapping(target = "removeVersionExportsItem", ignore = true)
+        // Not sure why mapstruct thinks the removeVersionExportsItem method is a property
     DatasetDto convert(Dataset dataset);
-    
-    
+
     default URI convert(String value) {
         if (value == null) {
             return null;

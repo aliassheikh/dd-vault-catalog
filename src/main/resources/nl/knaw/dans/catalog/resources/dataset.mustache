@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>DANS Data Vault Catalog - {{dataset.nbn}} - {{dataset.title}}</title>
+    <title>DANS Data Vault Catalog - {{dataset.nbn}} - {{title}}</title>
     <link rel="stylesheet" type="text/css" href="/assets/css/styles.css">
 </head>
 <body>
-<h1>DANS Data Vault Catalog</h1>
-<h2>{{dataset.title}}</h2>
+<div class="header-container">
+    <img id="dans-logo" alt="" src="/assets/img/DS-DANS-logo.svg" class="header-image">
+    <h1>DANS Data Vault Catalog summary for {{dataset.nbn}}</h1>
+</div>
+
+<h2 class="title">{{title}}</h2>
 
 <table class="dataset-metadata">
     <tr>
@@ -17,23 +21,23 @@
         <td class="field-name">Data Station</td>
         <td class="field-value">{{dataset.datastation}}</td>
     </tr>
-    {{#dataset.dataversePid}}   
-    <tr>
-        <td class="field-name">Dataverse PID</td>
-        <td class="field-value">{{.}}</td>
-    </tr>
+    {{#dataset.dataversePid}}
+        <tr>
+            <td class="field-name">Dataverse PID</td>
+            <td class="field-value">{{.}}</td>
+        </tr>
     {{/dataset.dataversePid}}
     {{#dataset.dataSupplier}}
-    <tr>
-        <td class="field-name">Data supplier</td>
-        <td class="field-value">{{.}}</td>
-    </tr>
+        <tr>
+            <td class="field-name">Data supplier</td>
+            <td class="field-value">{{.}}</td>
+        </tr>
     {{/dataset.dataSupplier}}
     {{#dataset.swordToken}}
-    <tr>
-        <td class="field-name">SWORD token</td>
-        <td class="field-value">{{.}}</td>
-    </tr>
+        <tr>
+            <td class="field-name">SWORD token</td>
+            <td class="field-value">{{.}}</td>
+        </tr>
     {{/dataset.swordToken}}
 </table>
 
@@ -43,6 +47,10 @@
         <p class="deaccessioned">This version has been deaccessioned.</p>
     {{/deaccessioned}}
     <table class="dve-metadata">
+        <tr>
+            <td class="field-name">Title</td>
+            <td class="field-value">{{title}}</td>
+        </tr>
         <tr>
             <td class="field-name">Bag ID</td>
             <td class="field-value">{{bagId}}</td>
@@ -60,36 +68,58 @@
             <td class="field-value">{{archivedTimestamp}}</td>
         </tr>
         {{#datasetPidVersion}}
-        <tr>
-            <td class="field-name">DV PID version</td>
-            <td class="field-value">{{.}}</td>
-        </tr>
+            <tr>
+                <td class="field-name">DV PID version</td>
+                <td class="field-value">{{.}}</td>
+            </tr>
         {{/datasetPidVersion}}
         {{#otherId}}
-        <tr>
-            <td class="field-name">Other ID</td>
-            <td class="field-value">{{.}}</td>
-        </tr>
+            <tr>
+                <td class="field-name">Other ID</td>
+                <td class="field-value">{{.}}</td>
+            </tr>
         {{/otherId}}
         {{#otherIdVersion}}
-        <tr>
-            <td class="field-name">Other ID version</td>
-            <td class="field-value">{{.}}</td>
-        </tr>
+            <tr>
+                <td class="field-name">Other ID version</td>
+                <td class="field-value">{{.}}</td>
+            </tr>
         {{/otherIdVersion}}
         {{#exporter}}
-        <tr>
-            <td class="field-name">Exporter</td>
-            <td class="field-value">{{.}}</td>
-        </tr>
+            <tr>
+                <td class="field-name">Exporter</td>
+                <td class="field-value">{{.}}</td>
+            </tr>
         {{/exporter}}
         {{#exporterVersion}}
-        <tr>
-            <td class="field-name">Other ID version</td>
-            <td class="field-value">{{.}}</td>
-        </tr>
+            <tr>
+                <td class="field-name">Other ID version</td>
+                <td class="field-value">{{.}}</td>
+            </tr>
         {{/exporterVersion}}
     </table>
+    
+    {{#fileMetas.size}}
+    <table class="file-table">
+        <thead>
+        <tr>
+            <th class="filepath">Filepath</th>
+            <th class="sha1sum">SHA-1</th>
+            <th class="filesize">File size</th>
+        </tr>
+        </thead>
+        {{#fileMetas}}
+            <tr>
+                <td class="filepath">{{filepath}}</td>
+                <td class="sha1sum">{{sha1sum}}</td>
+                <td class="filesize">{{byteSize}}</td>
+            </tr>
+        {{/fileMetas}}
+    </table>
+    {{/fileMetas.size}}
+    {{^fileMetas.size}}
+        <p class="no-files">No files in this version.</p>
+    {{/fileMetas.size}}
 {{/datasetVersionExports}}
 
 </body>

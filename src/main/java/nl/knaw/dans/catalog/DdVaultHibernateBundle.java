@@ -21,10 +21,11 @@ import io.dropwizard.hibernate.HibernateBundle;
 import nl.knaw.dans.catalog.config.DdVaultCatalogConfig;
 import nl.knaw.dans.catalog.core.Dataset;
 import nl.knaw.dans.catalog.core.DatasetVersionExport;
+import nl.knaw.dans.catalog.core.FileMeta;
 
 public class DdVaultHibernateBundle extends HibernateBundle<DdVaultCatalogConfig> {
     public DdVaultHibernateBundle() {
-        super(Dataset.class, DatasetVersionExport.class);
+        super(Dataset.class, DatasetVersionExport.class, FileMeta.class);
     }
 
     @Override

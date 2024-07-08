@@ -15,67 +15,58 @@
  */
 package nl.knaw.dans.catalog.core;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import nl.knaw.dans.convert.jpa.SwordTokenConverter;
-import nl.knaw.dans.validation.SwordToken;
+import nl.knaw.dans.convert.jpa.UriConverter;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import java.util.ArrayList;
-import java.util.List;
+import javax.validation.constraints.NotNull;
+import java.net.URI;
 
 @Entity
-@Table(name = "dataset", uniqueConstraints = {
-    @UniqueConstraint(columnNames = { "nbn" }),
-    @UniqueConstraint(columnNames = { "dataverse_pid" }),
-    @UniqueConstraint(columnNames = { "sword_token" })
+@Table(name = "file_meta", uniqueConstraints = {
+    @UniqueConstraint(columnNames = { "version_export_id", "filepath" }),
+    @UniqueConstraint(columnNames = { "version_export_id", "file_uri" })
 })
 @Getter
 @Setter
 @ToString
-@NoArgsConstructor
 @AllArgsConstructor
-public class Dataset {
-
+@NoArgsConstructor
+public class FileMeta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "nbn", nullable = false)
-    private String nbn;
+    @ManyToOne
+    @JoinColumn(name = "version_export_id")
+    @NotNull
+    @JsonIgnore
+    private DatasetVersionExport versionExport;
 
-    @Column(name = "dataverse_pid")
-    private String dataversePid;
+    @Column(name = "filepath", nullable = false)
+    private String filepath;
 
-    @Column(name = "sword_token")
-    @Convert(converter = SwordTokenConverter.class)
-    @SwordToken
-    private String swordToken;
+    @Column(name = "file_uri", nullable = false)
+    @Convert(converter = UriConverter.class)
+    private URI fileUri;
 
-    @Column(name = "data_supplier")
-    private String dataSupplier;
-
-    @Column(name = "datastation", nullable = false)
-    private String datastation;
-
-    @OneToMany(mappedBy = "dataset", cascade = CascadeType.ALL, orphanRemoval = true)
-    @ToString.Exclude
-    private List<DatasetVersionExport> datasetVersionExports = new ArrayList<>();
-
-    public void addDatasetVersionExport(DatasetVersionExport dve) {
-        dve.setDataset(this);
-        datasetVersionExports.add(dve);
-    }
+    @Column(name = "byte_size", nullable = false)
+    private Long byteSize;
+    
+    @Column(name = "sha1sum", nullable = false) 
+    private String sha1sum;
 }

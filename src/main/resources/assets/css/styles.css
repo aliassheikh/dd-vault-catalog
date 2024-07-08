@@ -11,6 +11,34 @@ body {
     font-size: 12px;
 }
 
+h1 {
+    font-size: 2.0em;
+    margin-top: 0;
+    text-color: lightgrey;
+}
+
+.header-container {
+    display: flex; 
+    align-items: center; 
+}
+
+h2 {
+    font-size: 1.8em;
+}
+
+h3 {
+    font-size: 1.5em;
+}
+
+p.no-files {
+    font-style: italic;
+}
+
+h2.title {
+    font-style: italic;
+    font-family: "Times New Roman", serif;
+}
+
 table.dataset-metadata {
 }
 
@@ -20,3 +48,35 @@ table.dve-metadata td.field-name {
     width: 13em;
 }
 
+table.dve-metadata {
+    padding-bottom: 20px;
+}
+
+table.file-table {
+    border-collapse: collapse;
+}
+
+table.file-table th {
+    text-align: left;
+    padding: 5px;
+    border-bottom: 1px solid #ccc;
+    background: #f0f0f0;
+}
+
+table.file-table th.filesize {
+    text-align: right;
+}
+
+table.file-table td {
+    padding: 5px;
+    border-bottom: 1px solid #ccc;
+}
+
+table.file-table td.filepath {
+    width: 50em;
+}
+
+table.file-table td.filesize {
+    width: 14em;
+    text-align: right;
+}
