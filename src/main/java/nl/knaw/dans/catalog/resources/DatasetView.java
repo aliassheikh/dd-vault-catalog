@@ -19,6 +19,7 @@ import io.dropwizard.views.common.View;
 import lombok.Getter;
 import nl.knaw.dans.catalog.core.Dataset;
 import nl.knaw.dans.catalog.core.DatasetVersionExport;
+import nl.knaw.dans.catalog.core.FileMeta;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -72,7 +73,7 @@ public class DatasetView extends View {
             dveCopy.setExporter(dve.getExporter());
             dveCopy.setExporterVersion(dve.getExporterVersion());
             dveCopy.setSkeletonRecord(dve.getSkeletonRecord());
-            for (var fileMeta : dve.getFileMetas()) {
+            for (var fileMeta : dve.getFileMetas().stream().sorted(Comparator.comparing(FileMeta::getFilepath)).toList()) {
                 dveCopy.addFileMeta(fileMeta);
             }
             copy.add(dveCopy);
