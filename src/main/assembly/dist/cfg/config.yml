@@ -25,5 +25,8 @@ logging:
       currentLogFilename: /var/opt/dans.knaw.nl/log/dd-vault-catalog/dd-vault-catalog.log
       type: file
       timeZone: system
+    # Used in combination with journald, which already adds the timestamp
+    - type: console
+      logFormat: "%-5p %c{0}: %m%n%dwREx"
   loggers:
     'org.hibernate.engine.internal.StatisticalLoggingSessionEventListener': 'OFF'

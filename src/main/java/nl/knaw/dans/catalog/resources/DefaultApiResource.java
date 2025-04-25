@@ -16,14 +16,30 @@
 package nl.knaw.dans.catalog.resources;
 
 import lombok.extern.slf4j.Slf4j;
+import nl.knaw.dans.catalog.api.AppInfoDto;
+import org.apache.http.HeaderElement;
+import org.apache.http.message.BasicHeaderValueParser;
 
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Arrays;
 
 @Slf4j
 public class DefaultApiResource implements DefaultApi {
 
     @Override
-    public Response getInfo() {
-        return Response.ok(new FindDatasetView()).build();
+    public Response getInfo(String accept) {
+        var acceptedMediaTypes = Arrays.stream(BasicHeaderValueParser.parseElements(accept, null))
+            .toList().stream().map(HeaderElement::getName)
+            .map(MediaType::valueOf);
+        if (acceptedMediaTypes.anyMatch(MediaType.TEXT_HTML_TYPE::isCompatible) && !"*/*".equals(accept)) {
+            return Response.ok(new FindDatasetView()).build();
+        }
+        else {
+            return Response.ok(new AppInfoDto()
+                .name("dd-vault-catalog")
+                .version("" + this.getClass().getPackage().getImplementationVersion())).build();
+        }
+
     }
 }

@@ -39,6 +39,7 @@
 
     <properties>
         <main-class>nl.knaw.dans.catalog.DdVaultCatalogApplication</main-class>
+        <dd-vault-catalog-api.version>0.7.1-SNAPSHOT</dd-vault-catalog-api.version>
     </properties>
 
     <dependencies>
@@ -103,6 +104,11 @@
             <groupId>org.apache.jena</groupId>
             <artifactId>apache-jena-libs</artifactId>
             <type>pom</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jul-to-slf4j</artifactId>
         </dependency>
 
         <!-- test dependencies -->
