@@ -26,6 +26,7 @@ import io.dropwizard.jersey.errors.ErrorEntityWriter;
 import io.dropwizard.jersey.errors.ErrorMessage;
 import io.dropwizard.views.common.View;
 import io.dropwizard.views.common.ViewBundle;
+import lombok.extern.slf4j.Slf4j;
 import nl.knaw.dans.catalog.config.DdVaultCatalogConfig;
 import nl.knaw.dans.catalog.db.DatasetDao;
 import nl.knaw.dans.catalog.resources.DatasetApiResource;
@@ -36,6 +37,7 @@ import nl.knaw.dans.lib.util.DefaultMediaTypeFilter;
 
 import javax.ws.rs.core.MediaType;
 
+@Slf4j
 public class DdVaultCatalogApplication extends Application<DdVaultCatalogConfig> {
     private final HibernateBundle<DdVaultCatalogConfig> hibernateBundle = new DdVaultHibernateBundle();
 

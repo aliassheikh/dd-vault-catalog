@@ -20,7 +20,6 @@ import io.dropwizard.testing.junit5.ResourceExtension;
 import nl.knaw.dans.catalog.api.VersionExportDto;
 import nl.knaw.dans.catalog.core.Dataset;
 import nl.knaw.dans.catalog.core.DatasetVersionExport;
-import nl.knaw.dans.catalog.db.DatasetDao;
 import nl.knaw.dans.catalog.db.DatasetVersionExportDao;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

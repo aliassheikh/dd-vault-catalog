@@ -38,7 +38,7 @@ public class DefaultApiResource implements DefaultApi {
         else {
             return Response.ok(new AppInfoDto()
                 .name("dd-vault-catalog")
-                .version("" + this.getClass().getPackage().getImplementationVersion())).build();
+                .version(this.getClass().getPackage().getImplementationVersion())).build();
         }
 
     }
