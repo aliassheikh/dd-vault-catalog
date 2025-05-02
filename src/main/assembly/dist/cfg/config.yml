@@ -7,10 +7,13 @@ server:
   adminConnectors:
     - type: http
       port: 20306
-  # If you need Jetty request logging to be disabled, uncomment the following lines.
-  # Alternatively, you might configure a file appender to send request logging to a separate place.
-  # requestLog:
-  #   appenders: []
+  requestLog:
+    appenders:
+      - type: file
+        archive: false
+        timeZone: system
+        currentLogFilename: /var/opt/dans.knaw.nl/log/dd-vault-catalog/request.log
+        logFormat: "%-5p [%d{ISO8601}] %c{0}: %m%n%dwREx"
 
 database:
   driverClass: org.postgresql.Driver
@@ -29,8 +32,8 @@ logging:
       currentLogFilename: /var/opt/dans.knaw.nl/log/dd-vault-catalog/dd-vault-catalog.log
       type: file
       timeZone: system
-    # Used in combination with journald, which already adds the timestamp
     - type: console
+      # Used in combination with journald, which already adds the timestamp
       logFormat: "%-5p %c{0}: %m%n%dwREx"
   loggers:
     'org.hibernate.engine.internal.StatisticalLoggingSessionEventListener': 'OFF'
