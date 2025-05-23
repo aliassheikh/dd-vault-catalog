@@ -49,7 +49,7 @@ public class DatasetVersionExportDaoTest {
             parentDataset.setDataversePid("dataversePid");
             parentDataset.setSwordToken(swordToken);
             parentDataset.setDataSupplier("dataSupplier");
-            parentDataset.setDatastation("datastation");
+            parentDataset.setOcflStorageRoot("datastation");
             datasetDao.save(parentDataset);
             DatasetVersionExport datasetVersionExport = new DatasetVersionExport();
             datasetVersionExport.setDataset(parentDataset);

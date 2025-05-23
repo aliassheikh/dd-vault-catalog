@@ -47,7 +47,7 @@ public class DatasetDaoTest {
             dataset.setDataversePid("dataversePid");
             dataset.setSwordToken(swordToken);
             dataset.setDataSupplier("dataSupplier");
-            dataset.setDatastation("datastation");
+            dataset.setOcflStorageRoot("datastation");
             dao.save(dataset);
 
         });
@@ -58,7 +58,7 @@ public class DatasetDaoTest {
             assertThat(dataset.get().getDataversePid()).isEqualTo("dataversePid");
             assertThat(dataset.get().getSwordToken()).isEqualTo(swordToken);
             assertThat(dataset.get().getDataSupplier()).isEqualTo("dataSupplier");
-            assertThat(dataset.get().getDatastation()).isEqualTo("datastation");
+            assertThat(dataset.get().getOcflStorageRoot()).isEqualTo("datastation");
         });
     }
 
@@ -71,7 +71,7 @@ public class DatasetDaoTest {
             dataset.setDataversePid("dataversePid");
             dataset.setSwordToken(swordToken);
             dataset.setDataSupplier("dataSupplier");
-            dataset.setDatastation("datastation");
+            dataset.setOcflStorageRoot("datastation");
             dao.save(dataset);
             assertThat(dataset.getId()).isNotNull();
         });
@@ -86,7 +86,7 @@ public class DatasetDaoTest {
             dataset.setDataversePid("dataversePid");
             dataset.setSwordToken(swordToken);
             dataset.setDataSupplier("dataSupplier");
-            dataset.setDatastation("datastation");
+            dataset.setOcflStorageRoot("datastation");
             dao.save(dataset);
             assertThat(dataset.getId()).isNotNull();
             dataset.setDataSupplier("new dataSupplier");
@@ -109,7 +109,7 @@ public class DatasetDaoTest {
             dataset.setDataversePid("dataversePid");
             dataset.setSwordToken(swordToken);
             dataset.setDataSupplier("dataSupplier");
-            dataset.setDatastation("datastation");
+            dataset.setOcflStorageRoot("datastation");
             var bagId = URI.create("urn:uuid:" + UUID.randomUUID());
 
             DatasetVersionExport datasetVersionExport = new DatasetVersionExport();
@@ -135,7 +135,7 @@ public class DatasetDaoTest {
             dataset.setDataversePid("dataversePid");
             dataset.setSwordToken(swordToken);
             dataset.setDataSupplier("dataSupplier");
-            dataset.setDatastation("datastation");
+            dataset.setOcflStorageRoot("datastation");
             var bagId = URI.create("urn:uuid:" + UUID.randomUUID());
 
             DatasetVersionExport datasetVersionExport = new DatasetVersionExport();

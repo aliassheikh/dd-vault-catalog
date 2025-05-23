@@ -67,8 +67,8 @@ public class Dataset {
     @Column(name = "data_supplier")
     private String dataSupplier;
 
-    @Column(name = "datastation", nullable = false)
-    private String datastation;
+    @Column(name = "ocfl_storage_root", nullable = false)
+    private String ocflStorageRoot;
 
     @OneToMany(mappedBy = "dataset", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
