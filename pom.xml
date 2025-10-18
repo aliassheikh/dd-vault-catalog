@@ -40,6 +40,7 @@
     <properties>
         <main-class>nl.knaw.dans.catalog.DdVaultCatalogApplication</main-class>
         <dd-vault-catalog-api.version>0.9.0</dd-vault-catalog-api.version>
+        <dans-build-resources-maven-plugin.version>0.8.0</dans-build-resources-maven-plugin.version>
     </properties>
 
     <dependencies>
