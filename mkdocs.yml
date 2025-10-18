@@ -22,9 +22,18 @@ repo_name: DANS-KNAW/dd-vault-catalog
 repo_url: https://github.com/DANS-KNAW/dd-vault-catalog
 
 nav:
-  - Manual: index.md
-  - API: to-api.md
-  - ⇒ DANS Data Station Architecture: arch.md
+  - Manual:
+      - Description: index.md
+      - Installation: installation.md
+      - Configuration: config.md
+      - API: to-api.md
+      - Context: context.md
+  - Development:
+      - Overview: dev.md
+
+extra:
+  data_vault_storage_root_url: https://dans-knaw.github.io/dans-datastation-architecture/data-vault-storage-root/
+
 
 plugins:
   - markdownextradata

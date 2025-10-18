@@ -14,8 +14,13 @@
 # limitations under the License.
 #
 
-mvn dans-build-resources:get-helper-script
-sh target/add-swagger-ui.sh
+# Fail on error
+set -e
 
-mvn initialize
+mvn dans-build-resources:get-helper-script
+mvn initialize # To ensure API definition is downloaded
+
+echo "Deploying Swagger UI and API definition..."
+sh target/add-swagger-ui.sh
 cp target/openapi/dd-vault-catalog-api.yml docs/api.yml
+echo "DONE"

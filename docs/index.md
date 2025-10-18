@@ -1,69 +1,27 @@
 dd-vault-catalog
-===========
-
-<!-- Remove this comment and extend the descriptions below -->
-
-
-SYNOPSIS
---------
-
-    dd-vault-catalog { server | check }
-
-
-DESCRIPTION
------------
+================
 
 Catalog of the contents of the DANS Data Vault
 
+Purpose
+-------
+This service provides a catalog of the contents of the DANS Data Vault. All datasets stored in all [Data Vault Storage Root]{:target=_blank}s is represented by
+a metadata record in the catalog. A catalog summary can be retrieved for each dataset. 
 
-ARGUMENTS
----------
+Interfaces
+----------
 
-        positional arguments:
-        {server,check}         available commands
-        
-        named arguments:
-        -h, --help             show this help message and exit
-        -v, --version          show the application version and exit
+### Provided interfaces
 
-EXAMPLES
---------
+#### API
 
-<!-- Add examples of invoking this module from the command line or via HTTP other interfaces -->
-    
+* _Protocol type_: HTTP
+* _Internal or external_: **internal**
+* _Purpose_: to add and retrieve dataset versions.
 
-INSTALLATION AND CONFIGURATION
-------------------------------
-Currently this project is built as an RPM package for RHEL7/CentOS7 and later. The RPM will install the binaries to
-`/opt/dans.knaw.nl/dd-vault-catalog` and the configuration files to `/etc/opt/dans.knaw.nl/dd-vault-catalog`. 
+#### Web UI
+* _Protocol type_: HTTP
+* _Internal or external_: **external**
+* _Purpose_: to serve catalog summary pages for datasets.
 
-For installation on systems that do no support RPM and/or systemd:
-
-1. Build the tarball (see next section).
-2. Extract it to some location on your system, for example `/opt/dans.knaw.nl/dd-vault-catalog`.
-3. Start the service with the following command
-   ```
-   /opt/dans.knaw.nl/dd-vault-catalog/bin/dd-vault-catalog server /opt/dans.knaw.nl/dd-vault-catalog/cfg/config.yml 
-   ```
-
-BUILDING FROM SOURCE
---------------------
-Prerequisites:
-
-* Java 11 or higher
-* Maven 3.3.3 or higher
-* RPM
-
-Steps:
-    
-    git clone https://github.com/DANS-KNAW/dd-vault-catalog.git
-    cd dd-vault-catalog 
-    mvn clean install
-
-If the `rpm` executable is found at `/usr/local/bin/rpm`, the build profile that includes the RPM 
-packaging will be activated. If `rpm` is available, but at a different path, then activate it by using
-Maven's `-P` switch: `mvn -Pprm install`.
-
-Alternatively, to build the tarball execute:
-
-    mvn clean install assembly:single
+[Data Vault Storage Root]: {{ data_vault_storage_root_url }}
