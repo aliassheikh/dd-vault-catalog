@@ -63,4 +63,43 @@ public class DatasetVersionExportDaoTest {
         assertThat(datasetVersionExportFound).isNotNull();
     }
 
+    @Test
+    public void testFindUnconfirmed() {
+        var swordToken = "sword:" + UUID.randomUUID();
+        var bagId1 = URI.create("urn:uuid:" + UUID.randomUUID());
+        var bagId2 = URI.create("urn:uuid:" + UUID.randomUUID());
+        db.inTransaction(() -> {
+            var parentDataset = new Dataset();
+            parentDataset.setNbn("456");
+            parentDataset.setDataversePid("dataversePid2");
+            parentDataset.setSwordToken(swordToken);
+            parentDataset.setDataSupplier("dataSupplier2");
+            parentDataset.setOcflStorageRoot("datastation2");
+            datasetDao.save(parentDataset);
+
+            var unconfirmedExport = new DatasetVersionExport();
+            unconfirmedExport.setDataset(parentDataset);
+            unconfirmedExport.setBagId(bagId1);
+            unconfirmedExport.setCreatedTimestamp(OffsetDateTime.now());
+            unconfirmedExport.setOcflObjectVersionNumber(1);
+            // archivedTimestamp is null
+
+            var confirmedExport = new DatasetVersionExport();
+            confirmedExport.setDataset(parentDataset);
+            confirmedExport.setBagId(bagId2);
+            confirmedExport.setCreatedTimestamp(OffsetDateTime.now());
+            confirmedExport.setOcflObjectVersionNumber(2);
+            confirmedExport.setArchivedTimestamp(OffsetDateTime.now());
+
+            dveDao.add(unconfirmedExport);
+            dveDao.add(confirmedExport);
+        });
+
+        var unconfirmedExports = dveDao.findUnconfirmed(10, 0);
+        assertThat(unconfirmedExports)
+            .extracting(DatasetVersionExport::getBagId)
+            .contains(bagId1)
+            .doesNotContain(bagId2);
+    }
+
 }

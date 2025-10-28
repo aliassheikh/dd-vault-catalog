@@ -29,10 +29,13 @@ import io.dropwizard.views.common.ViewBundle;
 import lombok.extern.slf4j.Slf4j;
 import nl.knaw.dans.catalog.config.DdVaultCatalogConfig;
 import nl.knaw.dans.catalog.db.DatasetDao;
+import nl.knaw.dans.catalog.db.DatasetVersionExportDao;
 import nl.knaw.dans.catalog.resources.DatasetApiResource;
+import nl.knaw.dans.catalog.resources.DatasetVersionExportApiResource;
 import nl.knaw.dans.catalog.resources.DefaultApiResource;
 import nl.knaw.dans.catalog.resources.ErrorView;
 import nl.knaw.dans.catalog.resources.IllegalArgumentExceptionMapper;
+import nl.knaw.dans.catalog.resources.UnconfirmedDatasetVersionExportsApiResource;
 import nl.knaw.dans.lib.util.DefaultMediaTypeFilter;
 
 import javax.ws.rs.core.MediaType;
@@ -61,8 +64,11 @@ public class DdVaultCatalogApplication extends Application<DdVaultCatalogConfig>
     @Override
     public void run(final DdVaultCatalogConfig configuration, final Environment environment) {
         var datasetDao = new DatasetDao(hibernateBundle.getSessionFactory());
+        var datasetVersionExportDao = new DatasetVersionExportDao(hibernateBundle.getSessionFactory());
         environment.jersey().register(new DefaultApiResource());
         environment.jersey().register(new DatasetApiResource(datasetDao));
+        environment.jersey().register(new DatasetVersionExportApiResource(datasetVersionExportDao));
+        environment.jersey().register(new UnconfirmedDatasetVersionExportsApiResource(datasetVersionExportDao));
         environment.jersey().register(new DefaultMediaTypeFilter());
         environment.jersey().register(new IllegalArgumentExceptionMapper());
         environment.jersey().register(new ErrorEntityWriter<ErrorMessage, View>(MediaType.TEXT_HTML_TYPE, View.class) {

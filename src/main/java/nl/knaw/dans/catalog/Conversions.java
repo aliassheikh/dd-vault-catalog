@@ -40,9 +40,6 @@ import java.util.Map;
  */
 @Mapper
 public interface Conversions {
-
-    ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-
     FileMetaDto convert(FileMeta fileMeta);
 
     @Mapping(target = "id", ignore = true)
@@ -141,26 +138,6 @@ public interface Conversions {
         return value.toString();
     }
 
-    default String mapToJsonString(Map<String, Object> value) throws JsonProcessingException {
-        if (value == null) {
-            return null;
-        }
+    List<VersionExportDto> convertDatasetVersionExportList(List<DatasetVersionExport> unconfirmed);
 
-        return OBJECT_MAPPER.writeValueAsString(value);
-    }
-
-    default Map<String, Object> jsonStringToMap(String value) {
-        if (value == null) {
-            return null;
-        }
-
-        try {
-            return OBJECT_MAPPER.readValue(value, new TypeReference<>() {
-
-            });
-        }
-        catch (JsonProcessingException e) {
-            throw new RuntimeException(String.format("Unable to parse JSON: %s", value), e);
-        }
-    }
 }

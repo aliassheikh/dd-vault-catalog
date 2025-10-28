@@ -33,6 +33,7 @@ import org.mapstruct.factory.Mappers;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Optional;
@@ -85,6 +86,29 @@ public class DatasetApiResource implements DatasetApi {
         else {
             return Response.status(Response.Status.BAD_REQUEST).entity("Invalid ocflObjectVersion; it must be equal or one greater than the latest DVE stored").build();
         }
+    }
+
+    @Override
+    @UnitOfWork
+    public Response setVersionExportArchivedTimestamp(String nbn, Integer ocflObjectVersionNumber, OffsetDateTime archivedTimestamp) {
+        var datasetOptional = datasetDao.findByNbn(nbn);
+        if (datasetOptional.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Dataset not found").build();
+        }
+        var dataset = datasetOptional.get();
+        var datasetVersionExportOptional = dataset.getDatasetVersionExports().stream()
+            .filter(dve -> dve.getOcflObjectVersionNumber().equals(ocflObjectVersionNumber))
+            .findFirst();
+        if (datasetVersionExportOptional.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND).entity("DatasetVersionExport not found").build();
+        }
+        var datasetVersionExport = datasetVersionExportOptional.get();
+        if (datasetVersionExport.getArchivedTimestamp() != null) {
+            return Response.status(Response.Status.CONFLICT).entity("Archived timestamp is already set").build();
+        }
+        datasetVersionExport.setArchivedTimestamp(archivedTimestamp);
+        datasetDao.save(dataset);
+        return Response.ok().build();
     }
 
     @Override

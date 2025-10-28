@@ -25,6 +25,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.net.URI;
+import java.util.List;
 import java.util.stream.Stream;
 
 public class DatasetVersionExportDao extends AbstractDAO<DatasetVersionExport> {
@@ -55,5 +56,20 @@ public class DatasetVersionExportDao extends AbstractDAO<DatasetVersionExport> {
         Root<DatasetVersionExport> root = cq.from(DatasetVersionExport.class);
         cq.select(root);
         return currentSession().createQuery(cq).stream();
+    }
+
+    public List<DatasetVersionExport> findUnconfirmed(int limit, int offset) {
+        CriteriaBuilder cb = currentSession().getCriteriaBuilder();
+        CriteriaQuery<DatasetVersionExport> cq = cb.createQuery(DatasetVersionExport.class);
+        Root<DatasetVersionExport> root = cq.from(DatasetVersionExport.class);
+
+        Predicate archivedTimestampIsNull = cb.isNull(root.get("archivedTimestamp"));
+        cq.where(archivedTimestampIsNull);
+
+        return currentSession()
+            .createQuery(cq)
+            .setFirstResult(offset)
+            .setMaxResults(limit)
+            .getResultList();
     }
 }
