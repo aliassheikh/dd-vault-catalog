@@ -24,4 +24,10 @@ Interfaces
 * _Internal or external_: **external**
 * _Purpose_: to serve catalog summary pages for datasets.
 
+#### Admin console
+
+* _Protocol type_: HTTP
+* _Internal or external_: **internal**
+* _Purpose_: to monitor and manage the catalog service.
+
 [Data Vault Storage Root]: {{ data_vault_storage_root_url }}
