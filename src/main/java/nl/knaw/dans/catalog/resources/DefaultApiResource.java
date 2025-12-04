@@ -17,8 +17,8 @@ package nl.knaw.dans.catalog.resources;
 
 import lombok.extern.slf4j.Slf4j;
 import nl.knaw.dans.catalog.api.AppInfoDto;
-import org.apache.http.HeaderElement;
-import org.apache.http.message.BasicHeaderValueParser;
+import org.apache.hc.core5.http.HeaderElement;
+import org.apache.hc.core5.http.message.BasicHeaderValueParser;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -29,7 +29,8 @@ public class DefaultApiResource implements DefaultApi {
 
     @Override
     public Response getInfo(String accept) {
-        var acceptedMediaTypes = Arrays.stream(BasicHeaderValueParser.parseElements(accept, null))
+        var parser = new BasicHeaderValueParser();
+        var acceptedMediaTypes = Arrays.stream(parser.parseElements(accept, null))
             .toList().stream().map(HeaderElement::getName)
             .map(MediaType::valueOf);
         if (acceptedMediaTypes.anyMatch(MediaType.TEXT_HTML_TYPE::isCompatible) && !"*/*".equals(accept)) {

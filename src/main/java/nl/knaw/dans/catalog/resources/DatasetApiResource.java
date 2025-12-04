@@ -26,8 +26,8 @@ import nl.knaw.dans.catalog.api.VersionExportDto;
 import nl.knaw.dans.catalog.core.Dataset;
 import nl.knaw.dans.catalog.core.DatasetVersionExport;
 import nl.knaw.dans.catalog.db.DatasetDao;
-import org.apache.http.HeaderElement;
-import org.apache.http.message.BasicHeaderValueParser;
+import org.apache.hc.core5.http.HeaderElement;
+import org.apache.hc.core5.http.message.BasicHeaderValueParser;
 import org.mapstruct.factory.Mappers;
 
 import javax.ws.rs.NotFoundException;
@@ -114,8 +114,9 @@ public class DatasetApiResource implements DatasetApi {
     @Override
     @UnitOfWork
     public Response getDataset(String nbn, String accept) {
-        var acceptedMediaTypes = Arrays.stream(BasicHeaderValueParser.parseElements(accept, null))
-            .toList().stream().map(HeaderElement::getName)
+        var parser = new BasicHeaderValueParser();
+        var acceptedMediaTypes = Arrays.stream(parser.parseElements(accept, null))
+            .map(HeaderElement::getName)
             .map(MediaType::valueOf);
         Optional<Dataset> datasetOptional = datasetDao.findByNbn(nbn);
         if (datasetOptional.isEmpty()) {
