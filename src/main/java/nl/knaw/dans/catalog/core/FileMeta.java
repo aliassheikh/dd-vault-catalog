@@ -57,7 +57,8 @@ public class FileMeta {
     @JsonIgnore
     private DatasetVersionExport versionExport;
 
-    @Column(name = "filepath", nullable = false)
+    // length = 2 * 255 + some margin
+    @Column(name = "filepath", nullable = false, length = 520)
     private String filepath;
 
     @Column(name = "file_uri", nullable = false)

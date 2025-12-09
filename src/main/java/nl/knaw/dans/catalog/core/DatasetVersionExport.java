@@ -79,9 +79,9 @@ public class DatasetVersionExport {
     @Column(name = "archived_timestamp")
     private OffsetDateTime archivedTimestamp;
 
-    @Column(name = "title")
+    @Column(name = "title", length = 300)
     private String title;
-    
+
     @Column(name = "dataverse_pid_version")
     private String dataversePidVersion;
 
@@ -110,9 +110,19 @@ public class DatasetVersionExport {
     @OneToMany(mappedBy = "versionExport", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     private List<FileMeta> fileMetas = new ArrayList<>();
-    
+
     public void addFileMeta(FileMeta fileMeta) {
         fileMetas.add(fileMeta);
         fileMeta.setVersionExport(this);
+    }
+
+    public void setTitle(String title) {
+        final String ellipsis = "...";
+        if (title != null && title.length() > 300) {
+            this.title = title.substring(0, 300 - ellipsis.length()) + ellipsis;
+        }
+        else {
+            this.title = title;
+        }
     }
 }
