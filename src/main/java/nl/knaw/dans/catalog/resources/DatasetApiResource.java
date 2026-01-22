@@ -31,9 +31,13 @@ import org.apache.hc.core5.http.message.BasicHeaderValueParser;
 import org.apache.hc.core5.http.message.ParserCursor;
 import org.mapstruct.factory.Mappers;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.NotFoundException;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -63,30 +67,46 @@ public class DatasetApiResource implements DatasetApi {
 
     @Override
     @UnitOfWork
-    public Response setVersionExport(String nbn, Integer ocflObjectVersion, VersionExportDto versionExportDto) {
+    public Response updateVersionExport(String nbn, Integer ocflObjectVersion, VersionExportDto versionExportDto) {
         var datasetOptional = datasetDao.findByNbn(nbn);
         if (datasetOptional.isEmpty()) {
             return Response.status(Response.Status.NOT_FOUND).entity("Dataset not found").build();
         }
         var dataset = datasetOptional.get();
-        var latestDveInCatalog = dataset.getDatasetVersionExports().stream()
-            .max(Comparator.comparing(DatasetVersionExport::getOcflObjectVersionNumber)).orElseThrow(() -> new IllegalStateException("No DatasetVersionExports found for dataset with NBN " + nbn));
-        if (ocflObjectVersion.equals(latestDveInCatalog.getOcflObjectVersionNumber())) {
-            conversions.updateVersionExportFromDto(versionExportDto, latestDveInCatalog);
-            datasetDao.save(dataset);
-            return Response.ok().build();
+        var datasetVersionExportOptional = dataset.getDatasetVersionExports().stream()
+            .filter(dve -> dve.getOcflObjectVersionNumber().equals(versionExportDto.getOcflObjectVersionNumber()))
+            .findFirst();
+        if (datasetVersionExportOptional.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND).entity("DatasetVersionExport not found").build();
         }
-        else if (ocflObjectVersion.equals(latestDveInCatalog.getOcflObjectVersionNumber() + 1)) {
-            var datasetVersionExport = conversions.convert(versionExportDto);
-            datasetVersionExport.setDataset(dataset); // No way to have this done automatically in an after-mapping method it seems.
-            dataset.getDatasetVersionExports().add(datasetVersionExport);
-            datasetDao.save(dataset);
-            log.debug("Saved dataset; returning 200 OK");
-            return Response.ok().build();
+        var datasetVersionExport = datasetVersionExportOptional.get();
+        if (!datasetVersionExport.getSkeletonRecord()) {
+            return Response.status(Response.Status.CONFLICT).entity("Not a skeleton record. Cannot update").build();
         }
-        else {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid ocflObjectVersion; it must be equal or one greater than the latest DVE stored").build();
+        conversions.updateVersionExportFromDto(versionExportDto, datasetVersionExport);
+        datasetDao.save(dataset);
+        return Response.ok().build();
+    }
+
+    @Override
+    @UnitOfWork
+    public Response addVersionExport(String nbn, VersionExportDto versionExportDto) {
+        var datasetOptional = datasetDao.findByNbn(nbn);
+        if (datasetOptional.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Dataset not found").build();
         }
+        var dataset = datasetOptional.get();
+        var latestDatasetVersionExportOptional = dataset.getDatasetVersionExports().stream()
+            .max(Comparator.comparing(DatasetVersionExport::getOcflObjectVersionNumber));
+
+        if (latestDatasetVersionExportOptional.isPresent() && latestDatasetVersionExportOptional.get().getOcflObjectVersionNumber() + 1 != versionExportDto.getOcflObjectVersionNumber()) {
+            return Response.status(Status.CONFLICT).entity("ocflVersionNumber must be one higher than latest existing version's").build();
+        }
+        var versionExport = conversions.convert(versionExportDto);
+        versionExport.setDataset(dataset);
+        dataset.getDatasetVersionExports().add(versionExport);
+        datasetDao.save(dataset);
+        return Response.ok().build();
     }
 
     @Override
